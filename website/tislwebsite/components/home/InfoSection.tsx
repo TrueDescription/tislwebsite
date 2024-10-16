@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function InfoSection() {
   return (
-    <div className="infosection">
+    <div className="infosection flex justify-content">
     <div className="info-text">
         <h1>Welcome to the Toronto Intelligent Systems Lab</h1>
         <p>

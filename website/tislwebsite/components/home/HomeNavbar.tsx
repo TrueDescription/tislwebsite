@@ -22,22 +22,22 @@ export default function HomeNavbar() {
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link color="foreground" href="publications">
               Publications
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link color="foreground" href="teaching">
               Teaching
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link color="foreground" href="opportunities">
               Join Us
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link color="foreground" href="contact">
               <img className="material-symbols-outlined" src="/icons/mail.svg" alt="Icon" />
             </Link>
           </NavbarItem>
