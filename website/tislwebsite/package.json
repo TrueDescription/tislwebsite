@@ -9,6 +9,7 @@
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-free": "^6.6.0",
 		"@nextui-org/button": "2.0.38",
 		"@nextui-org/card": "^2.0.34",
 		"@nextui-org/code": "2.0.33",
@@ -23,6 +24,7 @@
 		"@nextui-org/system": "2.2.6",
 		"@nextui-org/theme": "2.2.11",
 		"@react-aria/visually-hidden": "3.8.12",
+		"academicons": "^1.9.2",
 		"clsx": "2.1.1",
 		"framer-motion": "~11.1.1",
 		"intl-messageformat": "^10.5.0",

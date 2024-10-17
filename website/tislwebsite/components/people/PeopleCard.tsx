@@ -1,6 +1,7 @@
 import React from "react";
 import {Card, CardHeader, CardBody} from "@nextui-org/card";
 import {Image} from "@nextui-org/image"
+import { Link } from "@nextui-org/link";
 
 interface props {
     title: string;
@@ -25,6 +26,21 @@ export default function PeopleCard({title, name, role, link}:props) {
                     src={link}
                     width={270}
                     />
+                    <div className="flex mt-3">
+                        <Link className="mr-2">
+                            <i className="fas fa-envelope"></i>
+                        </Link>
+                        <Link className="mr-2">
+                            <i className="fab fa-twitter"></i>
+                        </Link>
+                        <Link className="mr-2">
+                            <i className="ai ai-google-scholar"></i>
+                        </Link>
+                        <Link className="mr-2">
+                            <i className="fab fa-github"></i>
+                        </Link>
+                    </div>
+                    
                 </CardBody>
             </Card>
         </div>
