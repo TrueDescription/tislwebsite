@@ -17,7 +17,9 @@ export default function HomeNavbar() {
             <p>Toronto Intelligent Systems Lab</p>
           </Link>
         </NavbarBrand>
-        <NavbarContent>
+        <NavbarContent
+          style={{ display: "flex", justifyContent: "center", width: "100%" }}
+        >
           <NavbarItem>
             <Link color="foreground" href="/">
               Home
@@ -44,8 +46,6 @@ export default function HomeNavbar() {
             </Link>
           </NavbarItem>
         </NavbarContent>
-
-        {/* Right-aligned section for mail icon and search bar */}
         <NavbarContent className="ml-auto">
           <NavbarItem>
             <Link color="foreground" href="/contact">
