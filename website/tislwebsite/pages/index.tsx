@@ -25,7 +25,7 @@ export default function Home() {
             </a>
             &nbsp;and led by&nbsp;
             <a
-              href="../author/igor-gilitschenski/"
+              href="../people/Igor-Gilitschenski/"
               className="text-blue-600 hover:underline"
             >
               Igor Gilitschenski

@@ -3,118 +3,217 @@ import AuthorCard from "@/components/publications/authorCard";
 import PublicationCard from "@/components/publications/publicationCard";
 import Publication from "@/components/publications/publicationType";
 import ShareButtons from "@/components/publications/shareButtons";
+import { Chip } from "@nextui-org/chip";
+import { User } from "@nextui-org/user";
 import { useRouter } from "next/router";
-
-const publicationsData: Publication = {
-  title:
-    "When does Self-Prediction help? Understanding Auxiliary Tasks in Reinforcement Learning",
-  authors: [
-    "Claas Voelcker",
-    "Tyler Kastner",
-    "Igor Gilitschenski",
-    "Amir-Massoud Farahmand",
-  ],
-  year: 2024,
-  publicationType: "pubtype-paper-conference",
-  links: {
-    pdf: "/publication/202407-rlc-aux_tasks_in_rl/rlc2024-aux_tasks_in_rl.pdf",
-    code: "https://github.com/adaptive-agents-lab/understading_auxilliary_tasks",
-    cite: "/publication/202407-rlc-aux_tasks_in_rl/cite.bib",
-  },
-  slug: "temp-1",
-};
+import { useEffect, useState } from "react";
 
 export default function PublicationsPage() {
   const router = useRouter();
   const { slug } = router.query;
+  const [publication, setPublication] = useState<Publication | null>(null);
+
+  useEffect(() => {
+    if (!slug) return;
+
+    async function fetchPublication() {
+      try {
+        const response = await fetch(
+          `/api/publication?slug=${encodeURIComponent(slug as string)}`
+        );
+        const data: Publication | null = await response.json();
+
+        if (data) {
+          setPublication({
+            ...data,
+            authors:
+              typeof data.authors === "string"
+                ? data.authors.split(",").map((author: string) => author.trim())
+                : data.authors,
+          });
+        } else {
+          setPublication(null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch publication:", error);
+      }
+    }
+
+    fetchPublication();
+  }, [slug]);
+
   if (!slug) {
-    return <div>Loading...</div>; // Handle loading state
+    return <div>Loading...</div>;
   }
 
+  if (!publication) {
+    return <div>Publication not found</div>;
+  }
   return (
     <div>
       <HomeNavbar />
       <div className="page-body container mx-auto px-4 lg:px-8 py-8">
         <div className="pub">
-          {/* <div className="flex justify-center">
-                <PublicationCard {...publicationsData} />
-            </div> */}
           <div className="article-container pt-6">
-            <h1 className="text-3xl font-bold mb-4">
-              When does Self-Prediction help? Understanding Auxiliary Tasks in
-              Reinforcement Learning
-            </h1>
+            <h1 className="text-3xl font-bold mb-4">{publication.title}</h1>
 
             <div className="article-metadata text-gray-600 mb-4">
               <div className="flex flex-wrap space-x-2 mb-2">
-                <span>
-                  <a
-                    href="/author/claas-voelcker/"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Claas Voelcker
-                  </a>
-                </span>
-                ,{" "}
-                <span>
-                  <a
-                    href="/author/tyler-kastner/"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Tyler Kastner
-                  </a>
-                </span>
-                ,{" "}
-                <span>
-                  <a
-                    href="/author/igor-gilitschenski/"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Igor Gilitschenski
-                  </a>
-                </span>
-                ,{" "}
-                <span>
-                  <a
-                    href="/author/amir-massoud-farahmand/"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Amir-Massoud Farahmand
-                  </a>
-                </span>
+                {(typeof publication.authors === "string"
+                  ? publication.authors
+                      .split(",")
+                      .map((author: string) => author.trim())
+                  : publication.authors
+                ).map((author: string, index: number) => (
+                  <span key={index}>
+                    <a
+                      href={`/people/${author.replace(/ /g, "-")}/`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      <User
+                        name={author}
+                        description=""
+                        avatarProps={{
+                          src: `/authors/${author.replace(/ /g, "-").toLowerCase()}.jpg`,
+                        }}
+                      />
+                    </a>
+                  </span>
+                ))}
               </div>
 
               <span className="article-date block text-gray-500">
-                July, 2024
+                {new Date(publication.date).toLocaleDateString("en-US", {
+                  month: "long",
+                  year: "numeric",
+                })}
               </span>
             </div>
 
             <div className="btn-links mb-6 flex space-x-4">
-              <a
-                className="btn border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-2 px-4 rounded transition-colors duration-200"
-                href="/publication/202407-rlc-aux_tasks_in_rl/rlc2024-aux_tasks_in_rl.pdf"
-                target="_blank"
-                rel="noopener"
-              >
-                PDF
-              </a>
+              {publication.url_pdf && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_pdf}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    PDF
+                  </a>
+                </Chip>
+              )}
+              {publication.url_preprint && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_preprint}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Preprint
+                  </a>
+                </Chip>
+              )}
 
-              <a
-                href="#"
-                className="btn border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-2 px-4 rounded transition-colors duration-200"
-                onClick={() => alert("Cite modal would appear here")}
-              >
-                Cite
-              </a>
+              {publication.url_code && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_code}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Code
+                  </a>
+                </Chip>
+              )}
 
-              <a
-                className="btn border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-2 px-4 rounded transition-colors duration-200"
-                href="https://github.com/adaptive-agents-lab/understading_auxilliary_tasks"
-                target="_blank"
-                rel="noopener"
-              >
-                Code
-              </a>
+              {publication.url_dataset && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_dataset}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Dataset
+                  </a>
+                </Chip>
+              )}
+
+              {publication.url_poster && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_poster}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Poster
+                  </a>
+                </Chip>
+              )}
+
+              {publication.url_project && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_project}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Project
+                  </a>
+                </Chip>
+              )}
+
+              {publication.url_slides && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_slides}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Slides
+                  </a>
+                </Chip>
+              )}
+
+              {publication.url_source && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_source}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Source
+                  </a>
+                </Chip>
+              )}
+
+              {publication.url_video && (
+                <Chip color="primary">
+                  <a
+                    href={publication.url_video}
+                    className="btn btn-outline-primary btn-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Video
+                  </a>
+                </Chip>
+              )}
+              <Chip color="primary">
+                <a
+                  href="#"
+                  onClick={() => alert("Cite modal would appear here")}
+                >
+                  Cite
+                </a>
+              </Chip>
             </div>
           </div>
 
@@ -123,23 +222,7 @@ export default function PublicationsPage() {
               Abstract
             </h3>
             <p className="pub-abstract text-lg leading-relaxed text-justify mb-6">
-              We investigate the impact of auxiliary learning tasks such as
-              observation reconstruction and latent self-prediction on the
-              representation learning problem in reinforcement learning. We also
-              study how they interact with distractions and observation
-              functions in the MDP. We provide a theoretical analysis of the
-              learning dynamics of observation reconstruction, latent
-              self-prediction, and TD learning in the presence of distractions
-              and observation functions under linear model assumptions. With
-              this formalization, we are able to explain why latent-self
-              prediction is a helpful auxiliary task, while observation
-              reconstruction can provide more useful features when used in
-              isolation. Our empirical analysis shows that the insights obtained
-              from our learning dynamics framework predict the behavior of these
-              loss functions beyond the linear model assumption in non-linear
-              neural networks. This reinforces the usefulness of the linear
-              model framework not only for theoretical analysis, but also
-              practical benefit for applied problems.
+              {publication.abstract}
             </p>
 
             <div className="row my-6">
@@ -148,12 +231,7 @@ export default function PublicationsPage() {
                 <div className="row mb-4">
                   <div className="col-12 col-md-3 font-semibold">Type</div>
                   <div className="col-12 col-md-9">
-                    <a
-                      href="/publication/#paper-conference"
-                      className="text-blue-500 hover:underline"
-                    >
-                      Conference paper
-                    </a>
+                    <p>{publication.publication_types}</p>
                   </div>
                 </div>
                 <div className="row mb-4">
@@ -161,48 +239,15 @@ export default function PublicationsPage() {
                     Publication
                   </div>
                   <div className="col-12 col-md-9">
-                    Reinforcement Learning Conference <em>(RLC)</em>
+                    {publication.publication}{" "}
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="">
-              <ShareButtons slug={slug} />
+              <ShareButtons slug={slug as string} />
             </div>
-          </div>
-
-          <h4 className="text-xl font-semibold  my-8">
-            Toronto Intelligent Systems Lab Co-authors
-          </h4>
-
-          <div className="author-section grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-            <AuthorCard
-              name="Claas Voelcker"
-              title="PhD Student"
-              bio="My research focuses on task-aligned and value-aware model learning for reinforcement learning and control. My research focuses on agents learning world models which are correct where it matters."
-              avatar="/author/claas-voelcker/avatar_hu5035332920155993092.jpg"
-              links={{
-                email: "mailto:cvoelcker@cs.toronto.edu",
-                twitter: "https://twitter.com/c_voelcker",
-                scholar:
-                  "https://www.semanticscholar.org/author/C.-Voelcker/1387979639",
-                github: "https://github.com/cvoelcker",
-              }}
-            />
-
-            <AuthorCard
-              name="Igor Gilitschenski"
-              title="Assistant Professor"
-              avatar="/author/igor-gilitschenski/avatar_hu15440415280092298125.jpg"
-              links={{
-                email: "mailto:igor@gilitschenski.org",
-                twitter: "https://twitter.com/igilitschenski",
-                scholar:
-                  "https://scholar.google.com/citations?user=Nuw1Y4oAAAAJ&hl=en",
-                github: "https://github.com/igilitschenski",
-              }}
-            />
           </div>
         </div>
       </div>
