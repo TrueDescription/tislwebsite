@@ -5,7 +5,7 @@ export default function Alumni() {
     <div className="container mx-auto my-12 px-4">
       <div className="row justify-center">
         <div className="section-heading col-12 mb-6 text-center">
-          <h1 className="text-3xl font-bold">Alumni</h1>
+          {/* <h1 className="text-3xl font-bold">Alumni</h1> */}
         </div>
 
         <div className="col-12">

@@ -45,7 +45,7 @@ export default function People({ authors }: PeoplePageProps) {
         <h1 className="text-4xl font-bold m-5">Graduate</h1>
         <div className="flex justify-center flex-wrap">
           {authors
-            .filter((author) => author.author != "Igor Gilitschenski")
+            .filter((author) => author.author != "Igor Gilitschenski" && author.role === "PhD Student")
             .map((author) => (
               <PeopleCard
                 key={author.author}
@@ -59,7 +59,7 @@ export default function People({ authors }: PeoplePageProps) {
               />
             ))}
         </div>
-        {/* <h1 className="text-4xl font-bold m-5">Alumni</h1>
+        <h1 className="text-4xl font-bold m-5">Alumni</h1>
         <div className="flex justify-center flex-wrap">
           {authors
             .filter((author) => author.role === "Alumni")
@@ -69,12 +69,13 @@ export default function People({ authors }: PeoplePageProps) {
                 title={author.organizationName}
                 name={author.author}
                 role={author.role}
-                slug={`${author.author.replace(/\s+/g, "")}.jpg`}
-                link={`/public/${author.author.replace(/\s+/g, "")}.jpg`}
+                slug={`${author.author.replace(/\s+/g, "-")}`}
+                link={`/authors/${author.author.replace(/\s+/g, "-").toLowerCase()}.jpg`}
                 socialLinks={author.socialLinks}
+                personalWebsite={author.personalWebsite}
               />
             ))}
-        </div> */}
+        </div>
       </div>
       <Alumni />
       <Students />

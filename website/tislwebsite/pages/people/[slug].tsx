@@ -62,7 +62,6 @@ export default function PeoplesPage({
       <section id="profile-page" className="pt-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row justify-center lg:space-x-12">
-            {/* Profile Image and Info */}
             <div className="lg:w-1/3 flex flex-col items-center">
               <div id="profile" className="text-center">
                 <Image
@@ -119,13 +118,11 @@ export default function PeoplesPage({
               </div>
             </div>
 
-            {/* Biography Section */}
             <div className="lg:w-2/3 mt-8 lg:mt-0">
               <div className="article-style text-justify text-lg leading-relaxed">
                 <p>{author.profileBio}</p>
               </div>
 
-              {/* Publications Section */}
               <div className="article-widget content-widget-hr mt-12">
                 <h3 className="text-2xl font-semibold mb-4">
                   Latest Publications
