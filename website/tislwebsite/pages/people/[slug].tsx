@@ -67,7 +67,7 @@ export default function PeoplesPage({
                 <Image
                   alt="Card background"
                   className="rounded-full shadow-lg mb-6 object-cover"
-                  src={`/authors/${author.author.replace(/\s+/g, "-")}.jpg`}
+                  src={`/authors/${author.author.replace(/\s+/g, "-").toLowerCase()}.jpg`}
                   width={270}
                   height={270}
                 />
