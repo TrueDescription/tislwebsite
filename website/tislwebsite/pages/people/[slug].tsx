@@ -1,16 +1,9 @@
 import HomeNavbar from "@/components/home/HomeNavbar";
 import { AuthorProfile } from "@/components/people/peopleType";
-import { getAllAuthors, getLatestPublicationsByAuthor } from "@/lib/db";
-import { GetStaticPaths, GetStaticProps } from "next";
 import { Image } from "@nextui-org/image";
 import { useRouter } from "next/router";
 import { Link } from "@nextui-org/link";
 import Publication from "@/components/publications/publicationType";
-
-// interface PeoplePageProps {
-//   author: AuthorProfile;
-//   latestPublications: { id: number; title: string }[];
-// }
 
 interface PeoplePageProps {
   authors: AuthorProfile[];

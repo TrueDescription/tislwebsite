@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import Filter from "@/components/publications/fillter";
 import PublicationCard from "@/components/publications/publicationCard";
 import HomeNavbar from "@/components/home/HomeNavbar";
-import { GetStaticProps } from "next";
 import Publication from "@/components/publications/publicationType";
-import { getAllPublications } from "@/lib/db";
 import { AuthorProfile } from "@/components/people/peopleType";
 
 interface PublicationsPageProps {

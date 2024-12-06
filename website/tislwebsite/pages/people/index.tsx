@@ -1,9 +1,7 @@
 import React from "react";
 import HomeNavbar from "@/components/home/HomeNavbar";
 import PeopleCard from "@/components/people/PeopleCard";
-import { GetStaticProps } from "next";
 import { AuthorProfile } from "@/components/people/peopleType";
-import { getAllAuthors } from "@/lib/db";
 import Students from "@/components/people/Students";
 import Alumni from "@/components/people/Alumni";
 import Publication from "@/components/publications/publicationType";

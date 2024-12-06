@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Divider,
-  Link,
-} from "@nextui-org/react";
+import { Card, CardBody, Link } from "@nextui-org/react";
 import { Chip } from "@nextui-org/chip";
 import React from "react";
 import publicationType from "./publicationType";
@@ -14,19 +7,19 @@ export default function PublicationCard(pub: publicationType) {
   return (
     <div>
       <Card className="max-w-[750px]">
-        {/* <CardHeader className="flex gap-3">
-          
-        </CardHeader> */}
         <CardBody>
           <p className="text-lg">
             <i className="far fa-file-alt pub-icon mr-2" aria-hidden="true"></i>
             <span className="article-metadata li-cite-author">
-              {pub.authors.map((author, index) => (
-                <span key={index}>
-                  <a href={`/people/${author.replace(/ /g, "-")}/`}>{author}</a>
-                  {index < pub.authors.length - 1 ? ", " : ""}
-                </span>
-              ))}
+              {Array.isArray(pub.authors) &&
+                pub.authors.map((author, index) => (
+                  <span key={index}>
+                    <a href={`/people/${author.replace(/ /g, "-")}/`}>
+                      {author}
+                    </a>
+                    {index < pub.authors.length - 1 ? ", " : ""}
+                  </span>
+                ))}
               {" (" + pub.date.split("-")[0] + "). "}
               <Link href={`/publications/${encodeURIComponent(pub.title)}`}>
                 {pub.title}

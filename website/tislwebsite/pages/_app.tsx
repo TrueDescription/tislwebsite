@@ -8,7 +8,6 @@ import { fontSans, fontMono } from "@/config/fonts";
 import "@/styles/globals.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "academicons/css/academicons.min.css";
-import { getAllAuthors, getAllPublications } from "@/lib/db";
 import { useEffect, useState } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -21,7 +20,6 @@ export default function App({ Component, pageProps }: AppProps) {
     async function fetchData() {
       const authors = await fetch("/api/authors");
       const publications = await fetch("/api/publications");
-      // const response = await fetch('/api/site-data');
 
       const authorsData = await authors.json();
       setAuthors(authorsData);
