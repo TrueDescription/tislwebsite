@@ -5,23 +5,15 @@ import HomeNavbar from "@/components/home/HomeNavbar";
 import { GetStaticProps } from "next";
 import Publication from "@/components/publications/publicationType";
 import { getAllPublications } from "@/lib/db";
+import { AuthorProfile } from "@/components/people/peopleType";
 
 interface PublicationsPageProps {
+  authors: AuthorProfile[];
   publications: Publication[];
 }
 
-export const getStaticProps: GetStaticProps<
-  PublicationsPageProps
-> = async () => {
-  const publications = getAllPublications();
-  return {
-    props: {
-      publications,
-    },
-  };
-};
-
 export default function PublicationsPage({
+  authors,
   publications,
 }: PublicationsPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,7 +31,13 @@ export default function PublicationsPage({
       setFilterYear(value);
     }
   };
-
+  if (publications === null) {
+    return (
+      <div>
+        <HomeNavbar />
+      </div>
+    );
+  }
   const filteredPublications = publications
     .filter((pub) => {
       const matchesSearch = pub.title

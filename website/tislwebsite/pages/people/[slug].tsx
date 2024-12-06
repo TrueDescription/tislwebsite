@@ -5,55 +5,45 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { Image } from "@nextui-org/image";
 import { useRouter } from "next/router";
 import { Link } from "@nextui-org/link";
+import Publication from "@/components/publications/publicationType";
+
+// interface PeoplePageProps {
+//   author: AuthorProfile;
+//   latestPublications: { id: number; title: string }[];
+// }
 
 interface PeoplePageProps {
-  author: AuthorProfile;
-  latestPublications: { id: number; title: string }[];
+  authors: AuthorProfile[];
+  publications: Publication[];
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const authors = getAllAuthors();
-
-  const paths = authors.map((author) => ({
-    params: { slug: author.author.replace(/\s+/g, "-").toLowerCase() },
-  }));
-
-  return { paths, fallback: "blocking" };
-};
-
-export const getStaticProps: GetStaticProps<PeoplePageProps> = async ({
-  params,
-}) => {
-  const authors = getAllAuthors();
-  const authorName = params?.slug.replace(/-/g, " ");
-
-  const author = authors.find((author) => author.author === authorName);
-
-  if (!author) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const latestPublications = getLatestPublicationsByAuthor(author.author);
-
-  return {
-    props: {
-      author,
-      latestPublications,
-    },
-  };
-};
-
 export default function PeoplesPage({
-  author,
-  latestPublications,
+  authors,
+  publications,
 }: PeoplePageProps) {
   const router = useRouter();
   const { slug } = router.query;
 
-  if (!author) {
-    return <div className="text-center py-12">Loading...</div>;
+  if (!slug || authors == null || typeof slug !== "string") {
+    return (
+      <div>
+        <HomeNavbar />
+      </div>
+    );
+  }
+  console.log(slug);
+  const name = slug.replace(/-/g, " ");
+  console.log(name);
+  const author = authors.find((author) => {
+    return author.author == name;
+  });
+  if (author == null) {
+    return (
+      <div>
+        <HomeNavbar />
+        <p>This person does not have a page</p>
+      </div>
+    );
   }
 
   return (
@@ -128,7 +118,7 @@ export default function PeoplesPage({
                   Latest Publications
                 </h3>
                 <ul className="list-disc list-inside text-lg space-y-3">
-                  {latestPublications.map((pub) => (
+                  {/* {latestPublications.map((pub) => (
                     <li key={pub.id}>
                       <a
                         href={`/publication/${pub.id}`}
@@ -137,7 +127,7 @@ export default function PeoplesPage({
                         {pub.title}
                       </a>
                     </li>
-                  ))}
+                  ))} */}
                 </ul>
               </div>
             </div>

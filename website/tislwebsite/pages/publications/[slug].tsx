@@ -1,54 +1,45 @@
 import HomeNavbar from "@/components/home/HomeNavbar";
-import AuthorCard from "@/components/publications/authorCard";
-import PublicationCard from "@/components/publications/publicationCard";
+import { AuthorProfile } from "@/components/people/peopleType";
 import Publication from "@/components/publications/publicationType";
 import ShareButtons from "@/components/publications/shareButtons";
 import { Chip } from "@nextui-org/chip";
 import { User } from "@nextui-org/user";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 
-export default function PublicationsPage() {
+interface PublicationsPageProps {
+  authors: AuthorProfile[];
+  publications: Publication[];
+}
+
+export default function PublicationsPage({
+  authors,
+  publications,
+}: PublicationsPageProps) {
   const router = useRouter();
   const { slug } = router.query;
-  const [publication, setPublication] = useState<Publication | null>(null);
 
-  useEffect(() => {
-    if (!slug) return;
-
-    async function fetchPublication() {
-      try {
-        const response = await fetch(
-          `/api/publication?slug=${encodeURIComponent(slug as string)}`
-        );
-        const data: Publication | null = await response.json();
-
-        if (data) {
-          setPublication({
-            ...data,
-            authors:
-              typeof data.authors === "string"
-                ? data.authors.split(",").map((author: string) => author.trim())
-                : data.authors,
-          });
-        } else {
-          setPublication(null);
-        }
-      } catch (error) {
-        console.error("Failed to fetch publication:", error);
-      }
-    }
-
-    fetchPublication();
-  }, [slug]);
-
-  if (!slug) {
-    return <div>Loading...</div>;
+  if (!slug || publications == null) {
+    return (
+      <div>
+        <HomeNavbar />
+      </div>
+    );
   }
+
+  const decodedSlug = decodeURIComponent(slug as string);
+  console.log(decodedSlug);
+  // Now, find the publication by comparing its title to the decoded slug
+  const publication = publications.find((pub) => pub.title === decodedSlug);
 
   if (!publication) {
     return <div>Publication not found</div>;
   }
+
+  // Ensure authors is always an array of strings
+  const publicationAuthors = Array.isArray(publication.authors)
+    ? publication.authors
+    : publication.authors.split(",").map((author: string) => author.trim());
+
   return (
     <div>
       <HomeNavbar />
@@ -59,12 +50,7 @@ export default function PublicationsPage() {
 
             <div className="article-metadata text-gray-600 mb-4">
               <div className="flex flex-wrap space-x-2 mb-2">
-                {(typeof publication.authors === "string"
-                  ? publication.authors
-                      .split(",")
-                      .map((author: string) => author.trim())
-                  : publication.authors
-                ).map((author: string, index: number) => (
+                {publicationAuthors.map((author: string, index: number) => (
                   <span key={index}>
                     <a
                       href={`/people/${author.replace(/ /g, "-")}/`}
@@ -74,7 +60,9 @@ export default function PublicationsPage() {
                         name={author}
                         description=""
                         avatarProps={{
-                          src: `/authors/${author.replace(/ /g, "-").toLowerCase()}.jpg`,
+                          src: `/authors/${author
+                            .replace(/ /g, "-")
+                            .toLowerCase()}.jpg`,
                         }}
                       />
                     </a>
@@ -95,7 +83,6 @@ export default function PublicationsPage() {
                 <Chip color="primary">
                   <a
                     href={publication.url_pdf}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -107,7 +94,6 @@ export default function PublicationsPage() {
                 <Chip color="primary">
                   <a
                     href={publication.url_preprint}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -115,12 +101,10 @@ export default function PublicationsPage() {
                   </a>
                 </Chip>
               )}
-
               {publication.url_code && (
                 <Chip color="primary">
                   <a
                     href={publication.url_code}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -128,12 +112,10 @@ export default function PublicationsPage() {
                   </a>
                 </Chip>
               )}
-
               {publication.url_dataset && (
                 <Chip color="primary">
                   <a
                     href={publication.url_dataset}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -141,12 +123,10 @@ export default function PublicationsPage() {
                   </a>
                 </Chip>
               )}
-
               {publication.url_poster && (
                 <Chip color="primary">
                   <a
                     href={publication.url_poster}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -154,12 +134,10 @@ export default function PublicationsPage() {
                   </a>
                 </Chip>
               )}
-
               {publication.url_project && (
                 <Chip color="primary">
                   <a
                     href={publication.url_project}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -167,12 +145,10 @@ export default function PublicationsPage() {
                   </a>
                 </Chip>
               )}
-
               {publication.url_slides && (
                 <Chip color="primary">
                   <a
                     href={publication.url_slides}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -180,12 +156,10 @@ export default function PublicationsPage() {
                   </a>
                 </Chip>
               )}
-
               {publication.url_source && (
                 <Chip color="primary">
                   <a
                     href={publication.url_source}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -193,12 +167,10 @@ export default function PublicationsPage() {
                   </a>
                 </Chip>
               )}
-
               {publication.url_video && (
                 <Chip color="primary">
                   <a
                     href={publication.url_video}
-                    className="btn btn-outline-primary btn-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

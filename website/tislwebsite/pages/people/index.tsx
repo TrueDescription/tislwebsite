@@ -6,21 +6,24 @@ import { AuthorProfile } from "@/components/people/peopleType";
 import { getAllAuthors } from "@/lib/db";
 import Students from "@/components/people/Students";
 import Alumni from "@/components/people/Alumni";
+import Publication from "@/components/publications/publicationType";
 
 interface PeoplePageProps {
   authors: AuthorProfile[];
+  publications: Publication[];
 }
 
-export const getStaticProps: GetStaticProps<PeoplePageProps> = async () => {
-  const authors = getAllAuthors();
-  return {
-    props: {
-      authors,
-    },
-  };
-};
-
-export default function People({ authors }: PeoplePageProps) {
+export default function People({ authors, publications }: PeoplePageProps) {
+  if (authors === null) {
+    return (
+      <div>
+        <HomeNavbar />
+      </div>
+    );
+  }
+  const principle = authors.find((author) => {
+    return author.author == "Igor Gilitschenski";
+  });
   return (
     <div>
       <HomeNavbar />
@@ -28,7 +31,7 @@ export default function People({ authors }: PeoplePageProps) {
         <h1 className="text-4xl font-bold m-5">Meet The Team</h1>
         <div className="flex justify-center">
           <PeopleCard
-            title="Assistant Professor"
+            title={"Assistant Professor"}
             role="Principle Investigator"
             slug="Igor-Gilitschenski"
             name="Igor Gilitschenski"
@@ -45,7 +48,11 @@ export default function People({ authors }: PeoplePageProps) {
         <h1 className="text-4xl font-bold m-5">Graduate</h1>
         <div className="flex justify-center flex-wrap">
           {authors
-            .filter((author) => author.author != "Igor Gilitschenski" && author.role === "PhD Student")
+            .filter(
+              (author) =>
+                author.author != "Igor Gilitschenski" &&
+                author.role === "PhD Student"
+            )
             .map((author) => (
               <PeopleCard
                 key={author.author}

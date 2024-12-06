@@ -19,16 +19,24 @@ export default function PublicationCard(pub: publicationType) {
         </CardHeader> */}
         <CardBody>
           <p className="text-lg">
-          <i className="far fa-file-alt pub-icon mr-2" aria-hidden="true"></i>
-          <span className="article-metadata li-cite-author">
-            {pub.authors.map((author, index) => (
-              <span key={index}>
-                <a href={`/people/${author.replace(/ /g, "-")}/`}>{author}</a>
-                {index < pub.authors.length - 1 ? ", " : ""}
-              </span>
-            ))}{" (" + pub.date.split("-")[0] + "). "}
-            <Link href={`/publications/${pub.id}`}>{pub.title}</Link>{". "}<em>{pub.publicationShort.slice(1,-1)}{"."}</em>
-          </span>
+            <i className="far fa-file-alt pub-icon mr-2" aria-hidden="true"></i>
+            <span className="article-metadata li-cite-author">
+              {pub.authors.map((author, index) => (
+                <span key={index}>
+                  <a href={`/people/${author.replace(/ /g, "-")}/`}>{author}</a>
+                  {index < pub.authors.length - 1 ? ", " : ""}
+                </span>
+              ))}
+              {" (" + pub.date.split("-")[0] + "). "}
+              <Link href={`/publications/${encodeURIComponent(pub.title)}`}>
+                {pub.title}
+              </Link>
+              {". "}
+              <em>
+                {pub.publicationShort.slice(1, -1)}
+                {"."}
+              </em>
+            </span>
           </p>
           <div className="flex mt-2">
             {pub.url_pdf && (
@@ -146,9 +154,8 @@ export default function PublicationCard(pub: publicationType) {
                 </a>
               </Chip>
             )}
-            </div>
+          </div>
         </CardBody>
-
       </Card>
     </div>
   );

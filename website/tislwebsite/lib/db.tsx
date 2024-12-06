@@ -3,14 +3,35 @@ import path from "path";
 import Publication from "@/components/publications/publicationType";
 import { AuthorProfile } from "@/components/people/peopleType";
 
-const dbPath = path.resolve(process.cwd(), "data", "content.db");
-const db = new Database(dbPath);
+const DB_PATH = path.resolve(process.cwd(), "data", "content.db");
+const db = new Database(DB_PATH);
+
+function splitString(str: string | null | undefined): string[] {
+  return str ? str.split(", ").filter(Boolean) : [];
+}
 
 export function getAllPublications(): Publication[] {
   const rows = db
     .prepare(
       `
-    SELECT id, authors, date, publication_types, publication, publication_short, title, url_pdf, abstract, url_preprint, url_code, url_dataset, url_poster, url_project, url_slides, url_source, url_video
+    SELECT 
+      id, 
+      authors, 
+      date, 
+      publication_types, 
+      publication, 
+      publication_short, 
+      title, 
+      url_pdf, 
+      abstract, 
+      url_preprint, 
+      url_code, 
+      url_dataset, 
+      url_poster, 
+      url_project, 
+      url_slides, 
+      url_source, 
+      url_video
     FROM publications
   `
     )
@@ -36,9 +57,9 @@ export function getAllPublications(): Publication[] {
 
   return rows.map((row) => ({
     id: row.id,
-    authors: row.authors.split(", ").filter(Boolean),
+    authors: splitString(row.authors),
     date: row.date,
-    publication_types: row.publication_types.split(", ").filter(Boolean),
+    publication_types: splitString(row.publication_types),
     publication: row.publication,
     publicationShort: row.publication_short,
     title: row.title,
@@ -56,21 +77,29 @@ export function getAllPublications(): Publication[] {
 }
 
 export function openDb() {
-  const dbPath = path.resolve(process.cwd(), "data", "content.db");
-  return new Database(dbPath, { readonly: true });
+  return new Database(DB_PATH, { readonly: true });
 }
 
 export function getAllAuthors(): AuthorProfile[] {
   const rows = db
     .prepare(
       `
-    SELECT author, superuser, role, organization_name, organization_url, bio, interests, education, profile_bio, social_links, personal_website
+    SELECT 
+      author, 
+      role, 
+      organization_name, 
+      organization_url, 
+      bio, 
+      interests, 
+      education, 
+      profile_bio, 
+      social_links, 
+      personal_website
     FROM profiles
   `
     )
     .all() as Array<{
     author: string;
-    superuser: boolean;
     role: string;
     organization_name: string;
     organization_url: string;
@@ -84,37 +113,14 @@ export function getAllAuthors(): AuthorProfile[] {
 
   return rows.map((row) => ({
     author: row.author,
-    superuser: row.superuser,
     role: row.role,
     organizationName: row.organization_name,
     organizationUrl: row.organization_url,
     bio: row.bio,
-    interests: row.interests ? row.interests.split(", ").filter(Boolean) : [],
+    interests: splitString(row.interests),
     education: row.education,
     profileBio: row.profile_bio,
     personalWebsite: row.personal_website,
-    socialLinks: row.social_links
-      ? row.social_links.split(", ").filter(Boolean)
-      : [],
-  }));
-}
-
-export function getLatestPublicationsByAuthor(authorName: string, limit = 5) {
-  const db = new Database(dbPath);
-  const rows = db
-    .prepare(
-      `
-      SELECT id, title 
-      FROM publications 
-      WHERE authors LIKE ?
-      ORDER BY date DESC 
-      LIMIT ?
-      `
-    )
-    .all(`%${authorName}%`, limit);
-
-  return rows.map((row) => ({
-    id: row.id,
-    title: row.title,
+    socialLinks: splitString(row.social_links),
   }));
 }
