@@ -21,7 +21,7 @@ export default function PublicationsPage({
   if (!slug || publications == null) {
     return (
       <div>
-        <HomeNavbar />
+        <HomeNavbar activePage={"publications"} />
       </div>
     );
   }
