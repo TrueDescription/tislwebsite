@@ -17,7 +17,12 @@ export default function PeoplesPage({
   const router = useRouter();
   const { slug } = router.query;
 
-  if (!slug || authors == null || typeof slug !== "string") {
+  if (
+    !slug ||
+    authors == null ||
+    typeof slug !== "string" ||
+    publications == null
+  ) {
     return (
       <div>
         <HomeNavbar />
@@ -111,16 +116,24 @@ export default function PeoplesPage({
                   Latest Publications
                 </h3>
                 <ul className="list-disc list-inside text-lg space-y-3">
-                  {/* {latestPublications.map((pub) => (
-                    <li key={pub.id}>
-                      <a
-                        href={`/publication/${pub.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {pub.title}
-                      </a>
-                    </li>
-                  ))} */}
+                  {publications
+                    .filter((p) => p.authors.includes(author.author))
+                    .sort((a, b) => {
+                      const dateA = new Date(a.date).getTime();
+                      const dateB = new Date(b.date).getTime();
+                      return dateB - dateA;
+                    })
+                    .slice(0, 5)
+                    .map((pub) => (
+                      <li key={pub.id}>
+                        <a
+                          href={`/publication/${pub.id}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          {pub.title}
+                        </a>
+                      </li>
+                    ))}
                 </ul>
               </div>
             </div>
