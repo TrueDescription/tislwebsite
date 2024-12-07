@@ -28,24 +28,22 @@ export default function HomeNavbar() {
   return (
     <div className="w-full">
       <Navbar className="max-w-full p-0 mt-0" position="static">
-        <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-          <NavbarBrand className="mr-4">
+        <NavbarContent className="flex items-center w-full">
+          <NavbarBrand className="mr-6">
             <Link color="foreground" href="/">
               <p className="font-bold text-xl lg:text-xl transition-all duration-300">
                 Toronto Intelligent Systems Lab
               </p>
             </Link>
           </NavbarBrand>
+
           <NavbarMenuToggle
-            aria-label={currentPath ? "Close menu" : "Open menu"}
-            className="sm:hidden"
+            aria-label="Toggle Navigation Menu"
+            className="block lg:hidden"
           />
         </NavbarContent>
 
-        <NavbarContent
-          className="hidden sm:flex basis-1/5 sm:basis-full"
-          justify="end"
-        >
+        <NavbarContent className="hidden lg:flex gap-4" justify="end">
           {menuItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
@@ -70,7 +68,7 @@ export default function HomeNavbar() {
           </NavbarItem>
         </NavbarContent>
 
-        <NavbarMenu>
+        <NavbarMenu className="left-0">
           {menuItems.map((item) => (
             <NavbarMenuItem key={item.href}>
               <Link
