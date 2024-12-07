@@ -24,7 +24,7 @@ export default function PeopleCard({
 }: Props) {
   return (
     <div>
-      <Card className="py-4 m-5 mb-2 max-w-[300px] max-h-[435px]">
+      <Card className="py-4 m-5 mb-2 max-w-[300px] max-h-[450px]">
         {/* Wrap the title and image with a single Link */}
         <Link
           href={
@@ -69,16 +69,22 @@ export default function PeopleCard({
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                {link.includes("x") && <i className="fab fa-twitter"></i>}
                 {link.includes("twitter") && <i className="fab fa-twitter"></i>}
                 {link.includes("github") && <i className="fab fa-github"></i>}
                 {link.includes("scholar") && (
                   <i className="ai ai-google-scholar"></i>
                 )}
                 {link.includes("mailto") && <i className="fas fa-envelope"></i>}
-                {!link.includes("twitter") &&
+                {link.includes("linkedin") && (
+                  <i className="fab fa-linkedin"></i>
+                )}
+                {!link.includes("x") &&
+                  !link.includes("twitter") &&
                   !link.includes("github") &&
                   !link.includes("scholar") &&
-                  !link.includes("mailto") && <i className="fas fa-link"></i>}
+                  !link.includes("mailto") &&
+                  !link.includes("linkedin") && <i className="fas fa-link"></i>}
               </Link>
             ))}
         </div>

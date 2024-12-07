@@ -14,16 +14,22 @@ export default function PublicationCard(pub: publicationType) {
               {Array.isArray(pub.authors) &&
                 pub.authors.map((author, index) => (
                   <span key={index}>
-                    <a href={`/people/${author.replace(/ /g, "-")}/`}>
+                    <a
+                      href={`/people/${author.replace(/ /g, "-")}/`}
+                      className="hover:underline hover:text-blue-600"
+                    >
                       {author}
                     </a>
                     {index < pub.authors.length - 1 ? ", " : ""}
                   </span>
                 ))}
               {" (" + pub.date.split("-")[0] + "). "}
-              <Link href={`/publications/${encodeURIComponent(pub.title)}`}>
+              <a
+                href={`/publications/${encodeURIComponent(pub.title)}`}
+                className="text-blue-600 hover:underline"
+              >
                 {pub.title}
-              </Link>
+              </a>
               {". "}
               <em>
                 {pub.publicationShort.slice(1, -1)}
