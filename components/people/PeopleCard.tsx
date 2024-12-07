@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardBody } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { Link } from "@nextui-org/link";
@@ -22,6 +22,7 @@ export default function PeopleCard({
   socialLinks,
   personalWebsite,
 }: Props) {
+  const [imgSrc, setImgSrc] = useState(link);
   return (
     <div>
       <Card className="py-4 m-5 mb-2 max-w-[300px] max-h-[450px]">
@@ -38,7 +39,7 @@ export default function PeopleCard({
               ? "noopener noreferrer"
               : undefined
           }
-          className="block" // Ensure the entire area is clickable
+          className="block"
         >
           <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
             <p className="text-tiny uppercase font-bold">{role}</p>
@@ -52,7 +53,8 @@ export default function PeopleCard({
             <Image
               alt="Card background"
               className="object-cover rounded-xl"
-              src={link}
+              src={imgSrc}
+              onError={() => setImgSrc("/authors/default.png")}
               width={270}
               height={300}
             />

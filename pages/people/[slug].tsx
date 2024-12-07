@@ -4,6 +4,7 @@ import { Image } from "@nextui-org/image";
 import { useRouter } from "next/router";
 import { Link } from "@nextui-org/link";
 import Publication from "@/components/publications/publicationType";
+import { useState } from "react";
 
 interface PeoplePageProps {
   authors: AuthorProfile[];
@@ -29,11 +30,10 @@ export default function PeoplesPage({
       </div>
     );
   }
-  console.log(slug);
-  const name = slug.replace(/-/g, " ");
-  console.log(name);
+  const name = slug.replace(/-/g, " ").toLowerCase().trim();
+
   const author = authors.find((author) => {
-    return author.author == name;
+    return author.author.toLowerCase().replace(/-/g, " ").trim() === name;
   });
   if (author == null) {
     return (
@@ -43,6 +43,9 @@ export default function PeoplesPage({
       </div>
     );
   }
+  const [imgSrc, setImgSrc] = useState(
+    `/authors/${author.author.replace(/\s+/g, "-").toLowerCase()}.jpg`
+  );
 
   return (
     <div>
@@ -51,16 +54,20 @@ export default function PeoplesPage({
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row justify-center lg:space-x-12">
             <div className="lg:w-1/3 flex flex-col items-center">
-              <div id="profile" className="text-center">
+              <div
+                id="profile"
+                className="text-center flex flex-col items-center"
+              >
                 <Image
                   alt="Card background"
                   className="rounded-full shadow-lg mb-6 object-cover"
-                  src={`/authors/${author.author.replace(/\s+/g, "-").toLowerCase()}.jpg`}
+                  src={imgSrc}
+                  onError={() => setImgSrc("/authors/default.png")}
                   width={270}
                   height={270}
                 />
 
-                <div className="portrait-title">
+                <div className="portrait-title text-center">
                   <h2 className="text-2xl font-bold">{author.author}</h2>
                   <h3 className="text-xl text-gray-700">{author.role}</h3>
                   <h3 className="text-lg text-blue-600 hover:underline">
@@ -74,35 +81,38 @@ export default function PeoplesPage({
                   </h3>
                 </div>
 
-                {author.socialLinks &&
-                  author.socialLinks.map((link, index) => (
-                    <Link
-                      key={index}
-                      className="mr-2"
-                      href={link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {link.includes("twitter") && (
-                        <i className="fab fa-twitter"></i>
-                      )}
-                      {link.includes("github") && (
-                        <i className="fab fa-github"></i>
-                      )}
-                      {link.includes("scholar") && (
-                        <i className="ai ai-google-scholar"></i>
-                      )}
-                      {link.includes("mailto") && (
-                        <i className="fas fa-envelope"></i>
-                      )}
-                      {!link.includes("twitter") &&
-                        !link.includes("github") &&
-                        !link.includes("scholar") &&
-                        !link.includes("mailto") && (
-                          <i className="fas fa-link"></i>
+                {author.socialLinks && (
+                  <div className="flex justify-center gap-4 mt-4">
+                    {author.socialLinks.map((link, index) => (
+                      <Link
+                        key={index}
+                        className="text-xl"
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {link.includes("twitter") && (
+                          <i className="fab fa-twitter"></i>
                         )}
-                    </Link>
-                  ))}
+                        {link.includes("github") && (
+                          <i className="fab fa-github"></i>
+                        )}
+                        {link.includes("scholar") && (
+                          <i className="ai ai-google-scholar"></i>
+                        )}
+                        {link.includes("mailto") && (
+                          <i className="fas fa-envelope"></i>
+                        )}
+                        {!link.includes("twitter") &&
+                          !link.includes("github") &&
+                          !link.includes("scholar") &&
+                          !link.includes("mailto") && (
+                            <i className="fas fa-link"></i>
+                          )}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

@@ -18,7 +18,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ slug }) => {
         className="text-gray-600 hover:text-blue-500 transition-colors"
         aria-label="Share on Twitter"
       >
-        <i className="fab fa-twitter text-xl"></i>
+        <i className="fab fa-twitter text-3xl"></i>
       </a>
 
       <a
@@ -28,7 +28,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ slug }) => {
         className="text-gray-600 hover:text-blue-600 transition-colors"
         aria-label="Share on Facebook"
       >
-        <i className="fab fa-facebook text-xl"></i>
+        <i className="fab fa-facebook text-3xl"></i>
       </a>
 
       <a
@@ -36,7 +36,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ slug }) => {
         className="text-gray-600 hover:text-red-500 transition-colors"
         aria-label="Share via Email"
       >
-        <i className="fas fa-envelope text-xl"></i>
+        <i className="fas fa-envelope text-3xl"></i>
       </a>
 
       <a
@@ -46,7 +46,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ slug }) => {
         className="text-gray-600 hover:text-blue-700 transition-colors"
         aria-label="Share on LinkedIn"
       >
-        <i className="fab fa-linkedin text-xl"></i>
+        <i className="fab fa-linkedin text-3xl"></i>
       </a>
     </div>
   );

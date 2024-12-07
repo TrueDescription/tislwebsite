@@ -15,14 +15,14 @@ import {
 
 export default function HomeNavbar() {
   const router = useRouter();
-  const currentPath = router.pathname;
+  const currentPath = router.pathname.split("/")[1];
 
   const menuItems = [
-    { name: "Home", href: "/" },
-    { name: "People", href: "/people" },
-    { name: "Publications", href: "/publications" },
-    { name: "Teaching", href: "/teaching" },
-    { name: "Join Us", href: "/opportunities" },
+    { name: "Home", href: "" },
+    { name: "People", href: "people" },
+    { name: "Publications", href: "publications" },
+    { name: "Teaching", href: "teaching" },
+    { name: "Join Us", href: "opportunities" },
   ];
 
   return (
@@ -48,7 +48,7 @@ export default function HomeNavbar() {
             <NavbarItem key={item.href}>
               <Link
                 color="foreground"
-                href={item.href}
+                href={"/" + item.href}
                 className={`text-sm lg:text-base transition-all ${
                   currentPath === item.href ? "border-b-2 border-primary" : ""
                 }`}

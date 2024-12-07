@@ -21,14 +21,12 @@ export default function PublicationsPage({
   if (!slug || publications == null) {
     return (
       <div>
-        <HomeNavbar activePage={"publications"} />
+        <HomeNavbar />
       </div>
     );
   }
 
   const decodedSlug = decodeURIComponent(slug as string);
-  console.log(decodedSlug);
-  // Now, find the publication by comparing its title to the decoded slug
   const publication = publications.find((pub) => pub.title === decodedSlug);
 
   if (!publication) {
@@ -56,15 +54,7 @@ export default function PublicationsPage({
                       href={`/people/${author.replace(/ /g, "-")}/`}
                       className="text-blue-600 hover:underline"
                     >
-                      <User
-                        name={author}
-                        description=""
-                        avatarProps={{
-                          src: `/authors/${author
-                            .replace(/ /g, "-")
-                            .toLowerCase()}.jpg`,
-                        }}
-                      />
+                      {author}
                     </a>
                   </span>
                 ))}
@@ -82,7 +72,7 @@ export default function PublicationsPage({
               {publication.url_pdf && (
                 <Chip color="primary">
                   <a
-                    href={publication.url_pdf}
+                    href={"/" + publication.url_pdf}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
