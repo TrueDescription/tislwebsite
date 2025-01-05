@@ -33,7 +33,6 @@ export default function PublicationsPage({
     return <div>Publication not found</div>;
   }
 
-  // Ensure authors is always an array of strings
   const publicationAuthors = Array.isArray(publication.authors)
     ? publication.authors
     : publication.authors.split(",").map((author: string) => author.trim());
