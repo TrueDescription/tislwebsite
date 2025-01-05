@@ -31,14 +31,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!author) {
       return res.status(400).json({ message: "Author is required." });
     }
+    console.log(interests);
+    console.log(social_links);
 
-    const interestsString = Array.isArray(interests)
-      ? interests.join(",")
-      : interests;
-    const socialLinksString = Array.isArray(social_links)
-      ? social_links.join(",")
-      : social_links;
-
+    const interestsString = JSON.parse(interests).join(", ");
+    const socialLinksString = JSON.parse(social_links).join(", ");
     await db.run(
       `INSERT INTO profiles (
         author, superuser, role, organization_name, organization_url, bio,

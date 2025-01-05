@@ -95,34 +95,50 @@ export default function AdminPage() {
   useEffect(() => {
     async function fetchData() {
       try {
+        // Fetch both profiles and publications concurrently
         const [profilesRes, publicationsRes] = await Promise.all([
           fetch("/api/admin/profiles"),
           fetch("/api/admin/publications"),
         ]);
 
+        // If either request fails, redirect to login (per your logic)
         if (!profilesRes.ok || !publicationsRes.ok) {
+          router.push("/admin/login");
           throw new Error("Failed to fetch data. Possibly unauthorized.");
         }
 
+        // Parse the JSON results
         const profilesData = await profilesRes.json();
         const publicationsData = await publicationsRes.json();
+
+        // Transform profiles so interests & social_links are arrays
         const transformedProfiles = profilesData.map((profile: Profile) => ({
           ...profile,
           interests: Array.isArray(profile.interests)
             ? profile.interests
-            : profile.interests.split(",").map((i) => i.trim()),
+            : profile.interests
+                .split(",")
+                .map((i) => i.trim())
+                .filter(Boolean),
           social_links: Array.isArray(profile.social_links)
             ? profile.social_links
-            : profile.social_links.split(",").map((l) => l.trim()),
+            : profile.social_links
+                .split(",")
+                .map((l) => l.trim())
+                .filter(Boolean),
         }));
-        setProfiles(transformedProfiles);
-        setPublications(
-          publicationsData.sort(
-            (a: Publication, b: Publication) =>
-              new Date(b.date).getTime() - new Date(a.date).getTime()
-          )
+
+        // Sort publications by date (descending)
+        const sortedPublications = publicationsData.sort(
+          (a: Publication, b: Publication) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
         );
 
+        // Update state
+        setProfiles(transformedProfiles);
+        setPublications(sortedPublications);
+
+        // If we have an edit type and ID, auto-populate editItem
         if (editType && editId) {
           if (editType === "profiles") {
             const profile = transformedProfiles.find(
@@ -131,7 +147,7 @@ export default function AdminPage() {
             setEditItem(profile);
             setActiveSection("profiles");
           } else if (editType === "publications") {
-            const publication = publicationsData.find(
+            const publication = sortedPublications.find(
               (p: Publication) => p.id === Number(editId)
             );
             setEditItem(publication);
@@ -159,6 +175,11 @@ export default function AdminPage() {
     type: "publications" | "profiles",
     id: number | string
   ) {
+    const confirmationMessage = `This action is not reversable, are you sure?`;
+    const confirmDelete = window.confirm(confirmationMessage);
+
+    if (!confirmDelete) return;
+
     try {
       const res = await fetch(`/api/${type}Remove`, {
         method: "DELETE",
@@ -251,6 +272,7 @@ export default function AdminPage() {
         Object.entries(data).forEach(([key, value]) => {
           if (Array.isArray(value)) {
             data[key] = JSON.stringify(value);
+            console.log(key, value);
           }
         });
       }
@@ -347,7 +369,17 @@ export default function AdminPage() {
               <h2 className="text-2xl font-semibold">
                 Edit {"author" in editItem ? editItem.author : editItem.title}
               </h2>
-              <Button variant="outline" onClick={() => setEditItem(null)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setEditItem(null);
+                  window.history.replaceState(
+                    {},
+                    document.title,
+                    window.location.pathname
+                  );
+                }}
+              >
                 <ArrowLeftIcon className="mr-2 h-4 w-4" />
                 Back
               </Button>
@@ -437,20 +469,24 @@ export default function AdminPage() {
                 ) : key === "social_links" ? (
                   <div className="col-span-3">
                     <DynamicList
-                      items={(newItem as any).social_links || []}
-                      onChange={(items) =>
-                        setNewItem({ ...newItem, social_links: items })
-                      }
+                      items={editItem.social_links || []}
+                      onChange={(updatedLinks) => {
+                        setEditItem((prev) =>
+                          prev ? { ...prev, social_links: updatedLinks } : prev
+                        );
+                      }}
                       placeholder="Add social link"
                     />
                   </div>
                 ) : key === "interests" ? (
                   <div className="col-span-3">
                     <DynamicList
-                      items={(newItem as any).interests || []}
-                      onChange={(items) =>
-                        setNewItem({ ...newItem, interests: items })
-                      }
+                      items={editItem.interests || []}
+                      onChange={(updatedInterests) => {
+                        setEditItem((prev) =>
+                          prev ? { ...prev, interests: updatedInterests } : prev
+                        );
+                      }}
                       placeholder="Add interest"
                     />
                   </div>
