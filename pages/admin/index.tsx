@@ -532,7 +532,7 @@ export default function AdminPage() {
                     Add Author
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-md max-h-screen overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>Add New Author</DialogTitle>
                   </DialogHeader>
@@ -710,6 +710,7 @@ export default function AdminPage() {
                 </DialogContent>
               </Dialog>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProfiles.map((profile) => (
                 <Card key={profile.author}>
@@ -760,265 +761,157 @@ export default function AdminPage() {
           </section>
         ) : (
           <section>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-semibold">Publications</h2>
-              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <PlusIcon className="mr-2 h-4 w-4" />
-                    Add Publication
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Add New Publication</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="title" className="text-right">
-                        Title
-                      </Label>
-                      <Input
-                        id="title"
-                        className="col-span-3"
-                        value={(newItem as any).title || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, title: e.target.value })
-                        }
-                        required
-                      />
+            <div>
+              <div className="flex justify-between mb-4 ">
+                <h2 className="text-2xl font-semibold">Publications</h2>
+                <Dialog
+                  open={isAddDialogOpen}
+                  onOpenChange={setIsAddDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button className="flex items-center">
+                      <PlusIcon className="mr-2 h-4 w-4" />
+                      Add Publication
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl sm:text-2xl font-bold">
+                        Add New Publication
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                          id="title"
+                          value={(newItem as any).title || ""}
+                          onChange={(e) =>
+                            setNewItem({ ...newItem, title: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="authors">Authors</Label>
+                        <Input
+                          id="authors"
+                          value={(newItem as any).authors || ""}
+                          onChange={(e) =>
+                            setNewItem({ ...newItem, authors: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="date">Date</Label>
+                        <DatePicker
+                          id="date"
+                          selected={
+                            (newItem as any).date
+                              ? new Date((newItem as any).date)
+                              : null
+                          }
+                          onChange={(date) =>
+                            setNewItem({
+                              ...newItem,
+                              date: date?.toISOString().split("T")[0],
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="publication_types">
+                          Publication Type
+                        </Label>
+                        <Select
+                          value={(newItem as any).publication_types || ""}
+                          onValueChange={(value) =>
+                            setNewItem({ ...newItem, publication_types: value })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a publication type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PUBLICATION_TYPES.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="publication">Publication</Label>
+                        <Input
+                          id="publication"
+                          value={(newItem as any).publication || ""}
+                          onChange={(e) =>
+                            setNewItem({
+                              ...newItem,
+                              publication: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="publication_short">
+                          Publication Short
+                        </Label>
+                        <Input
+                          id="publication_short"
+                          value={(newItem as any).publication_short || ""}
+                          onChange={(e) =>
+                            setNewItem({
+                              ...newItem,
+                              publication_short: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="abstract">Abstract</Label>
+                        <Textarea
+                          id="abstract"
+                          value={(newItem as any).abstract || ""}
+                          onChange={(e) =>
+                            setNewItem({ ...newItem, abstract: e.target.value })
+                          }
+                          className="h-24"
+                        />
+                      </div>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {[
+                          { id: "url_pdf", label: "PDF URL" },
+                          { id: "url_preprint", label: "Preprint URL" },
+                          { id: "url_code", label: "Code URL" },
+                          { id: "url_dataset", label: "Dataset URL" },
+                          { id: "url_poster", label: "Poster URL" },
+                          { id: "url_project", label: "Project URL" },
+                          { id: "url_slides", label: "Slides URL" },
+                          { id: "url_source", label: "Source URL" },
+                          { id: "url_video", label: "Video URL" },
+                        ].map(({ id, label }) => (
+                          <div key={id} className="grid gap-2">
+                            <Label htmlFor={id}>{label}</Label>
+                            <Input
+                              id={id}
+                              value={(newItem as any)[id] || ""}
+                              onChange={(e) =>
+                                setNewItem({ ...newItem, [id]: e.target.value })
+                              }
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="authors" className="text-right">
-                        Authors
-                      </Label>
-                      <Input
-                        id="authors"
-                        className="col-span-3"
-                        value={(newItem as any).authors || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, authors: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="date" className="text-right">
-                        Date
-                      </Label>
-                      <DatePicker
-                        id="date"
-                        className="col-span-3"
-                        selected={
-                          (newItem as any).date
-                            ? new Date((newItem as any).date)
-                            : null
-                        }
-                        onChange={(date) =>
-                          setNewItem({
-                            ...newItem,
-                            date: date?.toISOString().split("T")[0],
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="publication_types" className="text-right">
-                        Publication Type
-                      </Label>
-                      <Select
-                        value={(newItem as any).publication_types || ""}
-                        onValueChange={(value) =>
-                          setNewItem({ ...newItem, publication_types: value })
-                        }
-                      >
-                        <SelectTrigger className="col-span-3">
-                          <SelectValue placeholder="Select a publication type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PUBLICATION_TYPES.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="publication" className="text-right">
-                        Publication
-                      </Label>
-                      <Input
-                        id="publication"
-                        className="col-span-3"
-                        value={(newItem as any).publication || ""}
-                        onChange={(e) =>
-                          setNewItem({
-                            ...newItem,
-                            publication: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="publication_short" className="text-right">
-                        Publication Short
-                      </Label>
-                      <Input
-                        id="publication_short"
-                        className="col-span-3"
-                        value={(newItem as any).publication_short || ""}
-                        onChange={(e) =>
-                          setNewItem({
-                            ...newItem,
-                            publication_short: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="abstract" className="text-right">
-                        Abstract
-                      </Label>
-                      <Textarea
-                        id="abstract"
-                        className="col-span-3"
-                        value={(newItem as any).abstract || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, abstract: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_pdf" className="text-right">
-                        PDF URL tea
-                      </Label>
-                      <Input
-                        id="url_pdf"
-                        className="col-span-3"
-                        value={(newItem as any).url_pdf || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, url_pdf: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_preprint" className="text-right">
-                        Preprint URL
-                      </Label>
-                      <Input
-                        id="url_preprint"
-                        className="col-span-3"
-                        value={(newItem as any).url_preprint || ""}
-                        onChange={(e) =>
-                          setNewItem({
-                            ...newItem,
-                            url_preprint: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_code" className="text-right">
-                        Code URL
-                      </Label>
-                      <Input
-                        id="url_code"
-                        className="col-span-3"
-                        value={(newItem as any).url_code || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, url_code: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_dataset" className="text-right">
-                        Dataset URL
-                      </Label>
-                      <Input
-                        id="url_dataset"
-                        className="col-span-3"
-                        value={(newItem as any).url_dataset || ""}
-                        onChange={(e) =>
-                          setNewItem({
-                            ...newItem,
-                            url_dataset: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_poster" className="text-right">
-                        Poster URL
-                      </Label>
-                      <Input
-                        id="url_poster"
-                        className="col-span-3"
-                        value={(newItem as any).url_poster || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, url_poster: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_project" className="text-right">
-                        Project URL
-                      </Label>
-                      <Input
-                        id="url_project"
-                        className="col-span-3"
-                        value={(newItem as any).url_project || ""}
-                        onChange={(e) =>
-                          setNewItem({
-                            ...newItem,
-                            url_project: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_slides" className="text-right">
-                        Slides URL
-                      </Label>
-                      <Input
-                        id="url_slides"
-                        className="col-span-3"
-                        value={(newItem as any).url_slides || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, url_slides: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_source" className="text-right">
-                        Source URL
-                      </Label>
-                      <Input
-                        id="url_source"
-                        className="col-span-3"
-                        value={(newItem as any).url_source || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, url_source: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="url_video" className="text-right">
-                        Video URL
-                      </Label>
-                      <Input
-                        id="url_video"
-                        className="col-span-3"
-                        value={(newItem as any).url_video || ""}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, url_video: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <Button onClick={handleAdd}>Add Publication</Button>
-                </DialogContent>
-              </Dialog>
+                    <Button onClick={handleAdd} className="w-full">
+                      Add Publication
+                    </Button>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredPublications.map((pub) => (
