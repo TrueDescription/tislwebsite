@@ -128,7 +128,6 @@ export default function AdminPage() {
           element.id = i;
           i++;
         });
-        setNews(newsData);
 
         // Transform profiles so interests & social_links are arrays
         const transformedProfiles = profilesData.map((profile: Profile) => ({
@@ -152,10 +151,15 @@ export default function AdminPage() {
           (a: Publication, b: Publication) =>
             new Date(b.date).getTime() - new Date(a.date).getTime()
         );
+        const sortedNews = newsData.sort(
+          (a: News, b: News) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
 
         // Update state
         setProfiles(transformedProfiles);
         setPublications(sortedPublications);
+        setNews(sortedNews);
 
         // If we have an edit type and ID, auto-populate editItem
         if (editType && editId) {
@@ -998,12 +1002,12 @@ export default function AdminPage() {
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="author" className="text-right">
-                        Author
+                        News
                       </Label>
                       <Input
-                        id="author"
+                        id="news"
                         className="col-span-3"
-                        value={(newItem as any).author || ""}
+                        value={(newItem as any).news || ""}
                         onChange={(e) =>
                           setNewItem({ ...newItem, author: e.target.value })
                         }
@@ -1065,6 +1069,10 @@ export default function AdminPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
+                    <p className="text-sm mb-2 flex items-center">
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {newsi.date}
+                    </p>
                     <div className="flex justify-between">
                       <Button
                         variant="outline"
