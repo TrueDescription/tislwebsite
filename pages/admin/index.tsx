@@ -69,6 +69,14 @@ type Publication = {
   url_slides: string;
   url_source: string;
   url_video: string;
+  cite: string;
+};
+
+type News = {
+  id: number;
+  class: string;
+  date: string;
+  content: string;
 };
 
 const PROFILE_ROLES = ["Alumni", "PhD Student", "Assistant Professor"];
@@ -78,13 +86,16 @@ export default function AdminPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [news, setNews] = useState<News[]>([]);
   const [publications, setPublications] = useState<Publication[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSection, setActiveSection] = useState<
-    "profiles" | "publications"
+    "profiles" | "publications" | "news"
   >("profiles");
-  const [editItem, setEditItem] = useState<Profile | Publication | null>(null);
+  const [editItem, setEditItem] = useState<Profile | Publication | News | null>(
+    null
+  );
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newItem, setNewItem] = useState<Partial<Profile | Publication>>({});
@@ -96,13 +107,14 @@ export default function AdminPage() {
     async function fetchData() {
       try {
         // Fetch both profiles and publications concurrently
-        const [profilesRes, publicationsRes] = await Promise.all([
+        const [profilesRes, publicationsRes, newsRes] = await Promise.all([
           fetch("/api/admin/profiles"),
           fetch("/api/admin/publications"),
+          fetch("/api/admin/news"),
         ]);
 
         // If either request fails, redirect to login (per your logic)
-        if (!profilesRes.ok || !publicationsRes.ok) {
+        if (!profilesRes.ok || !publicationsRes.ok || !newsRes.ok) {
           router.push("/admin/login");
           throw new Error("Failed to fetch data. Possibly unauthorized.");
         }
@@ -110,6 +122,13 @@ export default function AdminPage() {
         // Parse the JSON results
         const profilesData = await profilesRes.json();
         const publicationsData = await publicationsRes.json();
+        const newsData = await newsRes.json();
+        let i = 0;
+        newsData.forEach((element) => {
+          element.id = i;
+          i++;
+        });
+        setNews(newsData);
 
         // Transform profiles so interests & social_links are arrays
         const transformedProfiles = profilesData.map((profile: Profile) => ({
@@ -165,6 +184,10 @@ export default function AdminPage() {
     profile.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredNews = news.filter((newsi) =>
+    newsi.content.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const filteredPublications = publications.filter(
     (pub) =>
       pub.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -172,7 +195,7 @@ export default function AdminPage() {
   );
 
   async function handleRemove(
-    type: "publications" | "profiles",
+    type: "publications" | "profiles" | "news",
     id: number | string
   ) {
     const confirmationMessage = `This action is not reversable, are you sure?`;
@@ -345,6 +368,14 @@ export default function AdminPage() {
             >
               <FileTextIcon className="mr-2 h-4 w-4" />
               Publications
+            </Button>
+            <Button
+              variant={activeSection === "news" ? "default" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveSection("news")}
+            >
+              <FileTextIcon className="mr-2 h-4 w-4" />
+              News
             </Button>
           </nav>
         </div>
@@ -759,7 +790,7 @@ export default function AdminPage() {
               ))}
             </div>
           </section>
-        ) : (
+        ) : activeSection === "publications" ? (
           <section>
             <div>
               <div className="flex justify-between mb-4 ">
@@ -940,6 +971,117 @@ export default function AdminPage() {
                         variant="destructive"
                         size="sm"
                         onClick={() => handleRemove("publications", pub.id)}
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ) : (
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">News</h2>
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <PlusIcon className="mr-2 h-4 w-4" />
+                    Add News
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md max-h-screen overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Add New News</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="author" className="text-right">
+                        Author
+                      </Label>
+                      <Input
+                        id="author"
+                        className="col-span-3"
+                        value={(newItem as any).author || ""}
+                        onChange={(e) =>
+                          setNewItem({ ...newItem, author: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="role" className="text-right">
+                        Role
+                      </Label>
+                      <Select
+                        value={(newItem as any).role || ""}
+                        onValueChange={(value) =>
+                          setNewItem({ ...newItem, role: value })
+                        }
+                      >
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {PROFILE_ROLES.map((role) => (
+                            <SelectItem key={role} value={role}>
+                              {role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="organization_name" className="text-right">
+                        Organization
+                      </Label>
+                      <Input
+                        id="organization_name"
+                        className="col-span-3"
+                        value={(newItem as any).organization_name || ""}
+                        onChange={(e) =>
+                          setNewItem({
+                            ...newItem,
+                            organization_name: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <Button onClick={handleAdd}>Add Author</Button>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {news.map((newsi) => (
+                <Card key={newsi.id}>
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <div>
+                      <CardTitle className="text-lg">
+                        <i className={newsi.class} aria-hidden="true"></i>
+                        {newsi.content}
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setEditItem(newsi);
+                          router.push(
+                            `/admin?type=news&id=${encodeURIComponent(newsi.content)}`
+                          );
+                        }}
+                      >
+                        Edit News
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleRemove("news", newsi.content)}
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>
