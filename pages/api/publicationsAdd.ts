@@ -54,6 +54,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       url_slides: "",
       url_source: "",
       url_video: "",
+      cite : ""
     };
 
     const dataWithDefaults = { ...defaults, ...data };
@@ -62,8 +63,8 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       `INSERT INTO publications (
         authors, date, publication_types, publication, publication_short, title,
         url_pdf, abstract, url_preprint, url_code, url_dataset, url_poster,
-        url_project, url_slides, url_source, url_video
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        url_project, url_slides, url_source, url_video, cite
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         dataWithDefaults.authors,
         dataWithDefaults.date,
@@ -81,6 +82,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         dataWithDefaults.url_slides,
         dataWithDefaults.url_source,
         dataWithDefaults.url_video,
+        dataWithDefaults.cite,
       ]
     );
 
@@ -123,7 +125,9 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
       url_slides,
       url_source,
       url_video,
+      cite,
     } = data;
+    console.log(cite);
 
     if (!id) {
       return res.status(400).json({ message: "Publication ID is required." });
@@ -147,6 +151,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
         url_slides = ?,
         url_source = ?,
         url_video = ?
+        cite = ?
        WHERE id = ?`,
       [
         authors,
@@ -165,6 +170,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
         url_slides,
         url_source,
         url_video,
+        cite,
         id,
       ]
     );

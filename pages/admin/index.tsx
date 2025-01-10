@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Tooltip } from "@nextui-org/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -81,6 +82,7 @@ type News = {
 
 const PROFILE_ROLES = ["Alumni", "PhD Student", "Assistant Professor"];
 const PUBLICATION_TYPES = ["paper-conference", "article-journal"];
+// const ICON_TYPES = ["fas fa-bullhorn", "fas fa-file-alt", "fas fa-hand-holding-heart", ];
 
 export default function AdminPage() {
   const router = useRouter();
@@ -98,7 +100,9 @@ export default function AdminPage() {
   );
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [newItem, setNewItem] = useState<Partial<Profile | Publication>>({});
+  const [newItem, setNewItem] = useState<Partial<Profile | Publication | News>>(
+    {}
+  );
 
   const editType = searchParams.get("type");
   const editId = searchParams.get("id");
@@ -124,10 +128,10 @@ export default function AdminPage() {
         const publicationsData = await publicationsRes.json();
         const newsData = await newsRes.json();
         let i = 0;
-        newsData.forEach((element) => {
-          element.id = i;
-          i++;
-        });
+        // newsData.forEach((element) => {
+        //   element.id = i;
+        //   i++;
+        // });
 
         // Transform profiles so interests & social_links are arrays
         const transformedProfiles = profilesData.map((profile: Profile) => ({
@@ -214,7 +218,7 @@ export default function AdminPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: type === "publications" ? id : undefined,
+          id: type === "publications" || "news" ? id : undefined,
           author: type === "profiles" ? id : undefined,
         }),
       });
@@ -225,6 +229,8 @@ export default function AdminPage() {
 
       if (type === "publications") {
         setPublications(publications.filter((pub) => pub.id !== id));
+      } else if (type === "news") {
+        setNews(news.filter((newsi) => newsi.id !== id));
       } else {
         setProfiles(profiles.filter((profile) => profile.author !== id));
       }
@@ -248,18 +254,30 @@ export default function AdminPage() {
   async function handleSave() {
     if (!editItem) return;
     try {
-      const type = "author" in editItem ? "profiles" : "publications";
-      const dataToSend = {
-        ...editItem,
-        interests: Array.isArray(editItem.interests)
-          ? editItem.interests.join(", ")
-          : editItem.interests,
-        social_links: Array.isArray(editItem.social_links)
-          ? editItem.social_links.join(", ")
-          : editItem.social_links,
-      };
-      console.log(editItem.interests);
-      console.log(editItem.social_links);
+      let type = "author" in editItem ? "profiles" : "publications";
+      let dataToSend = {};
+      if ("content" in editItem) {
+        type = "news";
+        dataToSend = { ...editItem };
+        console.log("news edited");
+      } else if (type == "profiles") {
+        dataToSend = {
+          ...editItem,
+          interests: Array.isArray(editItem.interests)
+            ? editItem.interests.join(", ")
+            : editItem.interests,
+          social_links: Array.isArray(editItem.social_links)
+            ? editItem.social_links.join(", ")
+            : editItem.social_links,
+        };
+      } else {
+        dataToSend = { ...editItem };
+      }
+      console.log(dataToSend);
+      console.log(type);
+
+      // console.log(editItem.interests);
+      // console.log(editItem.social_links);
       const res = await fetch(`/api/admin/${type}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -292,9 +310,16 @@ export default function AdminPage() {
 
   async function handleAdd() {
     try {
-      const type = activeSection === "profiles" ? "profiles" : "publications";
+      let type = "";
+      console.log(activeSection);
+      if (activeSection == "news") {
+        type = "news";
+      } else if (activeSection == "profiles" || "publications") {
+        type = activeSection === "profiles" ? "profiles" : "publications";
+      }
+      console.log(type);
 
-      const data = { ...newItem };
+      let data = { ...newItem };
       if (type === "profiles") {
         Object.entries(data).forEach(([key, value]) => {
           if (Array.isArray(value)) {
@@ -303,6 +328,19 @@ export default function AdminPage() {
           }
         });
       }
+
+      if (type === "publications") {
+        console.log(data);
+        let authorsString = "";
+        data.authors.forEach((value) => {
+          authorsString = authorsString + value + ",";
+        });
+        data.authors = authorsString.slice(0, -1);
+        // data = {...data, authors : authorsString}
+        console.log(authorsString);
+      }
+      // console.log(data);
+      // console.log(data.authors);
 
       const res = await fetch(`/api/${type}Add`, {
         method: "POST",
@@ -321,6 +359,10 @@ export default function AdminPage() {
 
       if (type === "publications") {
         setPublications([...publications, result.publication]);
+      } else if (type === "news") {
+        router.refresh();
+        return;
+        setNews([...news, result.news]);
       } else {
         setProfiles([...profiles, result.profile]);
       }
@@ -367,7 +409,7 @@ export default function AdminPage() {
             </Button>
             <Button
               variant={activeSection === "publications" ? "default" : "ghost"}
-              className="w-full justify-start"
+              className="w-full justify-start mb-2"
               onClick={() => setActiveSection("publications")}
             >
               <FileTextIcon className="mr-2 h-4 w-4" />
@@ -393,10 +435,10 @@ export default function AdminPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="outline">
+          {/* <Button variant="outline">
             <LogOutIcon className="mr-2 h-4 w-4" />
             Logout
-          </Button>
+          </Button> */}
         </header>
         {editItem ? (
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -523,6 +565,26 @@ export default function AdminPage() {
                         );
                       }}
                       placeholder="Add interest"
+                    />
+                  </div>
+                ) : key === "class" ? (
+                  <div>
+                    <Label>
+                      Icon classes can be found here:{" "}
+                      <Link
+                        href="https://fontawesome.com/icons"
+                        target="_blank"
+                      >
+                        https://fontawesome.com/icons
+                      </Link>
+                    </Label>
+                    <Input
+                      type="text"
+                      id={key}
+                      name={key}
+                      value={value ?? ""}
+                      onChange={handleChange}
+                      className="mt-1 block w-full"
                     />
                   </div>
                 ) : (
@@ -829,13 +891,20 @@ export default function AdminPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="authors">Authors</Label>
-                        <Input
+                        {/* <Input
                           id="authors"
                           value={(newItem as any).authors || ""}
                           onChange={(e) =>
                             setNewItem({ ...newItem, authors: e.target.value })
                           }
                           required
+                        /> */}
+                        <DynamicList
+                          items={(newItem as any).authors || []}
+                          onChange={(items) =>
+                            setNewItem({ ...newItem, authors: items })
+                          }
+                          placeholder="Add interest"
                         />
                       </div>
                       <div className="grid gap-2">
@@ -916,6 +985,17 @@ export default function AdminPage() {
                           className="h-24"
                         />
                       </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="abstract">Citation</Label>
+                        <Textarea
+                          id="Citation"
+                          value={(newItem as any).cite || ""}
+                          onChange={(e) =>
+                            setNewItem({ ...newItem, cite: e.target.value })
+                          }
+                          className="h-24"
+                        />
+                      </div>
                       <div className="grid gap-4 sm:grid-cols-2">
                         {[
                           { id: "url_pdf", label: "PDF URL" },
@@ -986,7 +1066,7 @@ export default function AdminPage() {
           </section>
         ) : (
           <section>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between mb-4 ">
               <h2 className="text-2xl font-semibold">News</h2>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
@@ -995,76 +1075,73 @@ export default function AdminPage() {
                     Add News
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md max-h-screen overflow-y-auto">
+                <DialogContent className="max-w-md">
                   <DialogHeader>
                     <DialogTitle>Add New News</DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="author" className="text-right">
-                        News
+                      <Label htmlFor="content" className="text-right">
+                        Content
                       </Label>
                       <Input
-                        id="news"
+                        id="content"
                         className="col-span-3"
-                        value={(newItem as any).news || ""}
+                        value={(newItem as any).content}
                         onChange={(e) =>
-                          setNewItem({ ...newItem, author: e.target.value })
+                          setNewItem({ ...newItem, content: e.target.value })
                         }
                         required
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="role" className="text-right">
-                        Role
-                      </Label>
-                      <Select
-                        value={(newItem as any).role || ""}
-                        onValueChange={(value) =>
-                          setNewItem({ ...newItem, role: value })
-                        }
-                      >
-                        <SelectTrigger className="col-span-3">
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PROFILE_ROLES.map((role) => (
-                            <SelectItem key={role} value={role}>
-                              {role}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="organization_name" className="text-right">
-                        Organization
+                      <Label htmlFor="Icon" className="text-right">
+                        Icon
                       </Label>
                       <Input
-                        id="organization_name"
+                        id="Icon"
                         className="col-span-3"
-                        value={(newItem as any).organization_name || ""}
+                        value={(newItem as any).class || ""}
                         onChange={(e) =>
                           setNewItem({
                             ...newItem,
-                            organization_name: e.target.value,
+                            class: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="organization_name" className="text-right">
+                        Date
+                      </Label>
+                      <DatePicker
+                        id="date"
+                        selected={
+                          (newItem as any).date
+                            ? new Date((newItem as any).date)
+                            : null
+                        }
+                        onChange={(date) =>
+                          setNewItem({
+                            ...newItem,
+                            date: date?.toISOString().split("T")[0],
                           })
                         }
                       />
                     </div>
                   </div>
-                  <Button onClick={handleAdd}>Add Author</Button>
+                  <Button onClick={handleAdd}>Add News</Button>
                 </DialogContent>
               </Dialog>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {news.map((newsi) => (
+              {filteredNews.map((newsi) => (
                 <Card key={newsi.id}>
                   <CardHeader className="flex flex-row items-center gap-4">
-                    <div>
+                    <div className="">
                       <CardTitle className="text-lg">
                         <i className={newsi.class} aria-hidden="true"></i>
-                        {newsi.content}
+                        <p>{newsi.content}</p>
                       </CardTitle>
                     </div>
                   </CardHeader>
@@ -1089,7 +1166,7 @@ export default function AdminPage() {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => handleRemove("news", newsi.content)}
+                        onClick={() => handleRemove("news", newsi.id)}
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>

@@ -27,6 +27,7 @@ async function handleUpdate(req: NextApiRequest, res: NextApiResponse) {
     url_slides,
     url_source,
     url_video,
+    cite
   } = req.body;
 
   await db.run(
@@ -46,7 +47,8 @@ async function handleUpdate(req: NextApiRequest, res: NextApiResponse) {
       url_project = ?,
       url_slides = ?,
       url_source = ?,
-      url_video = ?
+      url_video = ?,
+      cite = ?
      WHERE id = ?`,
     [
       authors,
@@ -65,6 +67,7 @@ async function handleUpdate(req: NextApiRequest, res: NextApiResponse) {
       url_slides,
       url_source,
       url_video,
+      cite,
       id
     ]
   );
