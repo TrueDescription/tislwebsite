@@ -1,8 +1,11 @@
 import React from "react";
 import HomeNavbar from "@/components/home/HomeNavbar";
 import NewsSection from "@/components/home/NewsSection";
-
-export default function Home() {
+import News from "@/components/home/newsType";
+interface NewsSectionProps {
+  news: News[];
+}
+export default function Home({ news }: NewsSectionProps) {
   return (
     <div>
       <HomeNavbar />
@@ -78,7 +81,7 @@ export default function Home() {
         </div>
       </div>
 
-      <NewsSection />
+      <NewsSection news={news} />
     </div>
   );
 }

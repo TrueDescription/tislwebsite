@@ -29,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
       setPublications(pubData);
       const newsData = await news.json();
       setNews(newsData);
+      // console.log(newsData);
     }
     fetchData();
   }, []);

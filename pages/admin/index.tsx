@@ -248,7 +248,7 @@ export default function AdminPage() {
         [e.target.name]: e.target.value,
       }));
     }
-    console.log(editItem);
+    // console.log(editItem);
   }
 
   async function handleSave() {
