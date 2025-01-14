@@ -1,9 +1,44 @@
 import { Card, CardBody, Link } from "@nextui-org/react";
 import { Chip } from "@nextui-org/chip";
+import { Code } from "@nextui-org/code";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 import React from "react";
 import publicationType from "./publicationType";
 
 export default function PublicationCard(pub: publicationType) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  // const [textToCopy, setTextToCopy] = useState("This is the text to copy!");
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(pub.cite).catch((err) => {
+      console.error("Failed to copy: ", err);
+    });
+  };
+
+  const downloadFile = () => {
+    const blob = new Blob([pub.cite], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "cite.bib";
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div>
       <Card className="max-w-[750px]">
@@ -151,6 +186,51 @@ export default function PublicationCard(pub: publicationType) {
                 >
                   Video
                 </a>
+              </Chip>
+            )}
+
+            {pub.cite && (
+              <Chip color="primary" className="mr-2">
+                <a className="btn btn-outline-primary btn-sm" onClick={onOpen}>
+                  Cite
+                </a>
+                <Modal
+                  isDismissable={false}
+                  isKeyboardDismissDisabled={true}
+                  isOpen={isOpen}
+                  onOpenChange={onOpenChange}
+                >
+                  <ModalContent className="max-w-fit">
+                    {/* <ModalContent> */}
+                    {(onClose) => (
+                      <>
+                        <ModalHeader className="flex flex-col gap-1">
+                          Citation
+                        </ModalHeader>
+                        <ModalBody>
+                          <pre>
+                            <code>{pub.cite}</code>
+                          </pre>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            color="danger"
+                            variant="light"
+                            onPress={onClose}
+                          >
+                            Close
+                          </Button>
+                          <Button color="primary" onPress={copyToClipboard}>
+                            Copy
+                          </Button>
+                          <Button color="primary" onPress={downloadFile}>
+                            Download
+                          </Button>
+                        </ModalFooter>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
               </Chip>
             )}
           </div>

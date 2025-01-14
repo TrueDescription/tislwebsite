@@ -16,4 +16,5 @@ export default interface Publication {
   url_slides: string;
   url_source: string;
   url_video: string;
+  cite: string;
 }

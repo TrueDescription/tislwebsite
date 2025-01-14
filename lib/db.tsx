@@ -2,6 +2,7 @@ import Database from "better-sqlite3";
 import path from "path";
 import Publication from "@/components/publications/publicationType";
 import { AuthorProfile } from "@/components/people/peopleType";
+import News from "@/components/home/newsType";
 
 const DB_PATH = path.resolve(process.cwd(), "data", "content.db");
 const db = new Database(DB_PATH);
@@ -31,7 +32,8 @@ export function getAllPublications(): Publication[] {
       url_project, 
       url_slides, 
       url_source, 
-      url_video
+      url_video,
+      cite
     FROM publications
   `
     )
@@ -53,6 +55,7 @@ export function getAllPublications(): Publication[] {
     url_slides: string;
     url_source: string;
     url_video: string;
+    cite: string;
   }>;
 
   return rows.map((row) => ({
@@ -73,6 +76,7 @@ export function getAllPublications(): Publication[] {
     url_source: row.url_source,
     url_video: row.url_video,
     url_code: row.url_code,
+    cite: row.cite,
   }));
 }
 
@@ -122,5 +126,32 @@ export function getAllAuthors(): AuthorProfile[] {
     profileBio: row.profile_bio,
     personalWebsite: row.personal_website,
     socialLinks: splitString(row.social_links),
+  }));
+}
+
+export function getAllNews(): News[] {
+  const rows = db
+    .prepare(
+      `
+    SELECT 
+      id, 
+      class, 
+      content, 
+      date
+    FROM news
+  `
+    )
+    .all() as Array<{
+    id: number;
+    class: string;
+    content: string;
+    date: string;
+  }>;
+
+  return rows.map((row) => ({
+    id: row.id,
+    class: row.class,
+    content: row.content,
+    date: row.date,
   }));
 }
