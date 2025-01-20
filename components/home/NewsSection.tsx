@@ -6,7 +6,7 @@ interface NewsSectionProps {
   news: News[];
 }
 export default function NewsSection({ news }: NewsSectionProps) {
-  console.log(news);
+  // console.log(news);
   // news.map((item) => {
   //   console.log(item);
   // });
@@ -54,42 +54,62 @@ export default function NewsSection({ news }: NewsSectionProps) {
           <h1 className="text-3xl font-bold">News</h1>
         </div>
 
-        <div className="col-12">
-          <ul className="space-y-6">
+        <div className="max-w-4xl mx-auto px-4">
+          <ul className="space-y-8 list-disc pl-8">
             {news
               .sort(
                 (a, b) =>
                   new Date(b.date).getTime() - new Date(a.date).getTime()
-              ) // Sort by date
-              .map((item) => {
-                return (
-                  <li
-                    key={item.id}
-                    className="inline-flex items-center text-lg leading-relaxed mr-4"
-                  >
-                    <i className={`${item.class} mr-2`} aria-hidden="true"></i>
-                    <strong>{item.date}</strong>,{" "}
-                    <ReactMarkdown
-                      components={{
-                        a: ({ href, children }) => {
-                          // Extract the last part of the href path
-                          const lastPart = href?.split("/").pop();
-                          return (
-                            <a
-                              href={`people/${lastPart}`}
-                              className="text-blue-500 underline"
-                            >
-                              {children}
-                            </a>
-                          );
-                        },
-                      }}
-                    >
-                      {item.content}
-                    </ReactMarkdown>
-                  </li>
-                );
-              })}
+              )
+              .map((item) => (
+                <li key={item.id} className="pl-2">
+                  <div className="flex items-start space-x-4">
+                    <div className=" w-5 h-5 mt-1 mr-1">
+                      <i className={`${item.class} mr-2`} aria-hidden="true" />
+                    </div>
+                    <div className="flex-grow">
+                      <div className="flex flex-col space-y-1">
+                        <time className="">
+                          {new Date(item.date)
+                            .toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            .replace(", ", ",\u00A0")}
+                        </time>
+                        <ReactMarkdown
+                          components={{
+                            a: ({ href, children }) => {
+                              const lastPart = href?.split("/")[1];
+                              console.log(href);
+                              return (
+                                <a
+                                  href={
+                                    href?.startsWith("http")
+                                      ? href
+                                      : href?.startsWith("publication/")
+                                        ? `publications/${lastPart}`
+                                        : href?.startsWith("author/")
+                                          ? `people/${lastPart}`
+                                          : undefined
+                                  }
+                                  className="text-blue-600 underline"
+                                >
+                                  {children}
+                                </a>
+                              );
+                            },
+                          }}
+                          className="text-left"
+                        >
+                          {item.content}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
           </ul>
         </div>
       </div>

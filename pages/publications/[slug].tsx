@@ -27,8 +27,23 @@ export default function PublicationsPage({
   }
 
   const decodedSlug = decodeURIComponent(slug as string);
-  const publication = publications.find((pub) => pub.title === decodedSlug);
-
+  // console.log(decodedSlug);
+  const publication = publications.find((pub) => {
+    // console.log(pub.url_pdf.split("/")[1]);
+    // console.log(
+    //   pub.title === decodedSlug || pub.url_pdf.split("/")[1] == decodedSlug
+    // );
+    if (pub.url_pdf) {
+      console.log(
+        `pdfPart=${pub.url_pdf}, decodedSlug=${decodedSlug} value=${pub.url_pdf.split("/")[1] == decodedSlug}`
+      );
+      return (
+        pub.title === decodedSlug || pub.url_pdf.split("/")[1] == decodedSlug
+      );
+    }
+    return pub.title === decodedSlug;
+  });
+  console.log(publication);
   if (!publication) {
     return <div>Publication not found</div>;
   }

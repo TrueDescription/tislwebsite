@@ -49,7 +49,7 @@ export default function People({ authors, publications }: PeoplePageProps) {
             .filter(
               (author) =>
                 author.author != "Igor Gilitschenski" &&
-                author.role === "PhD Student"
+                (author.role === "PhD Student" || author.role === "MSc Student")
             )
             .map((author) => (
               <PeopleCard

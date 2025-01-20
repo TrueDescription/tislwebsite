@@ -80,7 +80,12 @@ type News = {
   content: string;
 };
 
-const PROFILE_ROLES = ["Alumni", "PhD Student", "Assistant Professor"];
+const PROFILE_ROLES = [
+  "Alumni",
+  "PhD Student",
+  "Assistant Professor",
+  "MSc Student",
+];
 const PUBLICATION_TYPES = ["paper-conference", "article-journal"];
 // const ICON_TYPES = ["fas fa-bullhorn", "fas fa-file-alt", "fas fa-hand-holding-heart", ];
 
