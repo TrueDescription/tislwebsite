@@ -275,6 +275,11 @@ export default function AdminPage() {
             ? editItem.social_links.join(", ")
             : editItem.social_links,
         };
+        // if (avatarFile) {
+        //   const formData = new FormData();
+        //   formData.append("profilePic", avatarFile);
+
+        // }
       } else {
         dataToSend = { ...editItem };
       }

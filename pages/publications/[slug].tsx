@@ -5,6 +5,15 @@ import ShareButtons from "@/components/publications/shareButtons";
 import { Chip } from "@nextui-org/chip";
 import { User } from "@nextui-org/user";
 import { useRouter } from "next/router";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 
 interface PublicationsPageProps {
   authors: AuthorProfile[];
@@ -52,6 +61,30 @@ export default function PublicationsPage({
     ? publication.authors
     : publication.authors.split(",").map((author: string) => author.trim());
 
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  // const [textToCopy, setTextToCopy] = useState("This is the text to copy!");
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(publication.cite).catch((err) => {
+      console.error("Failed to copy: ", err);
+    });
+  };
+
+  const downloadFile = () => {
+    const blob = new Blob([publication.cite], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "cite.bib";
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
   return (
     <div>
       <HomeNavbar />
@@ -182,13 +215,47 @@ export default function PublicationsPage({
                   </a>
                 </Chip>
               )}
-              <Chip color="primary">
-                <a
-                  href="#"
-                  onClick={() => alert("Cite modal would appear here")}
-                >
+              <Chip color="primary" className="mr-2">
+                <a className="btn btn-outline-primary btn-sm" onClick={onOpen}>
                   Cite
                 </a>
+                <Modal
+                  isDismissable={false}
+                  isKeyboardDismissDisabled={true}
+                  isOpen={isOpen}
+                  onOpenChange={onOpenChange}
+                >
+                  <ModalContent className="max-w-fit">
+                    {/* <ModalContent> */}
+                    {(onClose) => (
+                      <>
+                        <ModalHeader className="flex flex-col gap-1">
+                          Citation
+                        </ModalHeader>
+                        <ModalBody>
+                          <pre>
+                            <code>{publication.cite}</code>
+                          </pre>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            color="danger"
+                            variant="light"
+                            onPress={onClose}
+                          >
+                            Close
+                          </Button>
+                          <Button color="primary" onPress={copyToClipboard}>
+                            Copy
+                          </Button>
+                          <Button color="primary" onPress={downloadFile}>
+                            Download
+                          </Button>
+                        </ModalFooter>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
               </Chip>
             </div>
           </div>
