@@ -40,16 +40,28 @@ export default function PeoplesPage({
   }
   const name = slug.replace(/-/g, " ").toLowerCase().trim();
 
-  const author = authors.find((author) => {
+  let author = authors.find((author) => {
     return author.author.toLowerCase().replace(/-/g, " ").trim() === name;
   });
   if (author == null) {
-    return (
-      <div>
-        <HomeNavbar />
-        <p>This person does not have a page</p>
-      </div>
-    );
+    author = {
+      author: slug.replace(/-/g, " ").trim(),
+      role: "",
+      organizationName: "University of Toronto",
+      organizationUrl: "https://www.utoronto.ca/",
+      bio: "string",
+      interests: [],
+      education: "",
+      profileBio: "",
+      socialLinks: [],
+      personalWebsite: "",
+    };
+    // return (
+    //   <div>
+    //     <HomeNavbar />
+    //     <p>This person does not have a page</p>
+    //   </div>
+    // );
   }
   const [imgSrc, setImgSrc] = useState(
     `/authors/${author.author.replace(/\s+/g, "-").toLowerCase()}.jpg`
