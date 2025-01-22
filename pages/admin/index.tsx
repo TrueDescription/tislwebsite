@@ -104,6 +104,7 @@ export default function AdminPage() {
     null
   );
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newItem, setNewItem] = useState<Partial<Profile | Publication | News>>(
     {}
@@ -280,8 +281,34 @@ export default function AdminPage() {
         //   formData.append("profilePic", avatarFile);
 
         // }
+        if (avatarFile && "author" in editItem) {
+          const formData = new FormData();
+          formData.append("avatar", avatarFile);
+          formData.append("author", editItem.author);
+          const avatarRes = await fetch("/api/admin/updateAvatar", {
+            method: "POST",
+            body: formData,
+          });
+          if (!avatarRes.ok) {
+            throw new Error("Avatar update failed.");
+          }
+          setAvatarFile(null);
+        }
       } else {
         dataToSend = { ...editItem };
+        if (pdfFile) {
+          const formData = new FormData();
+          formData.append("pdf", pdfFile);
+          formData.append("title", dataToSend.title);
+          const avatarRes = await fetch("/api/admin/updatePdf", {
+            method: "POST",
+            body: formData,
+          });
+          if (!avatarRes.ok) {
+            throw new Error("Avatar update failed.");
+          }
+          setPdfFile(null);
+        }
       }
       console.log(dataToSend);
       console.log(type);
@@ -295,19 +322,6 @@ export default function AdminPage() {
       });
       if (!res.ok) {
         throw new Error("Update failed. Possibly unauthorized.");
-      }
-
-      if (avatarFile && "author" in editItem) {
-        const formData = new FormData();
-        formData.append("avatar", avatarFile);
-        formData.append("author", editItem.author);
-        const avatarRes = await fetch("/api/admin/updateAvatar", {
-          method: "POST",
-          body: formData,
-        });
-        if (!avatarRes.ok) {
-          throw new Error("Avatar update failed.");
-        }
       }
 
       alert("Update successful");
@@ -337,6 +351,19 @@ export default function AdminPage() {
             console.log(key, value);
           }
         });
+        if (avatarFile) {
+          const formData = new FormData();
+          formData.append("avatar", avatarFile);
+          formData.append("author", data.author);
+          const avatarRes = await fetch("/api/admin/updateAvatar", {
+            method: "POST",
+            body: formData,
+          });
+          if (!avatarRes.ok) {
+            throw new Error("Avatar update failed.");
+          }
+          setAvatarFile(null);
+        }
       }
 
       if (type === "publications") {
@@ -347,7 +374,20 @@ export default function AdminPage() {
         });
         data.authors = authorsString.slice(0, -1);
         // data = {...data, authors : authorsString}
-        console.log(authorsString);
+        // console.log(authorsString);
+        if (pdfFile) {
+          const formData = new FormData();
+          formData.append("pdf", pdfFile);
+          formData.append("title", data.title);
+          const avatarRes = await fetch("/api/admin/updatePdf", {
+            method: "POST",
+            body: formData,
+          });
+          if (!avatarRes.ok) {
+            throw new Error("Avatar update failed.");
+          }
+          setPdfFile(null);
+        }
       }
       // console.log(data);
       // console.log(data.authors);
@@ -622,6 +662,23 @@ export default function AdminPage() {
                   type="file"
                   onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
                   accept="image/*"
+                  className="mt-1 block w-full"
+                />
+              </div>
+            )}
+            {"id" in editItem && (
+              <div className="mb-4">
+                <Label
+                  htmlFor="avatar"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Update Pdf:
+                </Label>
+                <Input
+                  id="pdfFile"
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
                   className="mt-1 block w-full"
                 />
               </div>
@@ -1004,6 +1061,19 @@ export default function AdminPage() {
                             setNewItem({ ...newItem, cite: e.target.value })
                           }
                           className="h-24"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="abstract">Upload PDF</Label>
+                        <input
+                          id="pdfFile"
+                          type="file"
+                          accept="application/pdf"
+                          className="mt-1 block w-full"
+                          onChange={(e) =>
+                            setPdfFile(e.target.files?.[0] || null)
+                          }
+                          required
                         />
                       </div>
                       <div className="grid gap-4 sm:grid-cols-2">
