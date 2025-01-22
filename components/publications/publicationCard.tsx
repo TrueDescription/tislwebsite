@@ -50,7 +50,7 @@ export default function PublicationCard(pub: publicationType) {
                 pub.authors.map((author, index) => (
                   <span key={index}>
                     <a
-                      href={`/people/${author.replace(/ /g, "-")}/`}
+                      href={`/people/${encodeURIComponent(author)}/`}
                       className="hover:underline hover:text-blue-600"
                     >
                       {author}

@@ -65,7 +65,7 @@ export default function PublicationsPage({
                 {publicationAuthors.map((author: string, index: number) => (
                   <span key={index}>
                     <a
-                      href={`/people/${author.replace(/ /g, "-")}/`}
+                      href={`/people/${encodeURIComponent(author)}/`}
                       className="text-blue-600 hover:underline"
                     >
                       {author}

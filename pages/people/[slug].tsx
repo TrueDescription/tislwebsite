@@ -38,14 +38,17 @@ export default function PeoplesPage({
       </div>
     );
   }
-  const name = slug.replace(/-/g, " ").toLowerCase().trim();
+  // const name = slug.replace(/-/g, " ").toLowerCase().trim();
+  const name = decodeURIComponent(slug).toLowerCase();
 
   let author = authors.find((author) => {
-    return author.author.toLowerCase().replace(/-/g, " ").trim() === name;
+    // return author.author.toLowerCase().replace(/-/g, " ").trim() === name;
+    return author.author.toLowerCase() === name;
   });
   if (author == null) {
     author = {
-      author: slug.replace(/-/g, " ").trim(),
+      // author: slug.replace(/-/g, " ").trim(),
+      author: decodeURIComponent(slug),
       role: "",
       organizationName: "University of Toronto",
       organizationUrl: "https://www.utoronto.ca/",
@@ -56,12 +59,6 @@ export default function PeoplesPage({
       socialLinks: [],
       personalWebsite: "",
     };
-    // return (
-    //   <div>
-    //     <HomeNavbar />
-    //     <p>This person does not have a page</p>
-    //   </div>
-    // );
   }
   const [imgSrc, setImgSrc] = useState(
     `/authors/${author.author.replace(/\s+/g, "-").toLowerCase()}.jpg`

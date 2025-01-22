@@ -31,7 +31,7 @@ export default function PeopleCard({
           href={
             personalWebsite.startsWith("http")
               ? personalWebsite
-              : `/people/${slug}`
+              : `/people/${encodeURIComponent(name)}`
           }
           target={personalWebsite.startsWith("http") ? "_blank" : "_self"}
           rel={
