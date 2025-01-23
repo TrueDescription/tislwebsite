@@ -310,8 +310,8 @@ export default function AdminPage() {
           setPdfFile(null);
         }
       }
-      console.log(dataToSend);
-      console.log(type);
+      // console.log(dataToSend);
+      // console.log(type);
 
       // console.log(editItem.interests);
       // console.log(editItem.social_links);
@@ -326,7 +326,7 @@ export default function AdminPage() {
 
       alert("Update successful");
       setEditItem(null);
-      router.push("/admin");
+      router.refresh();
     } catch (err: any) {
       alert(err.message);
     }
@@ -420,6 +420,7 @@ export default function AdminPage() {
       setIsAddDialogOpen(false);
       setNewItem({});
       setAvatarFile(null);
+      router.push("/admin");
     } catch (err: any) {
       alert(err.message);
     }
@@ -666,7 +667,7 @@ export default function AdminPage() {
                 />
               </div>
             )}
-            {"id" in editItem && (
+            {"authors" in editItem && (
               <div className="mb-4">
                 <Label
                   htmlFor="avatar"

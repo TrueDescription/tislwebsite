@@ -28,7 +28,7 @@ export default function Home({ news }: NewsSectionProps) {
             </a>
             &nbsp;and led by&nbsp;
             <a
-              href="../people/Igor-Gilitschenski/"
+              href={"../people/" + encodeURIComponent("Igor Gilitschenski")}
               className="text-blue-600 hover:underline"
             >
               Igor Gilitschenski

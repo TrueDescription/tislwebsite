@@ -54,7 +54,12 @@ export default function PublicationsPage({
   });
   console.log(publication);
   if (!publication) {
-    return <div>Publication not found</div>;
+    return (
+      <div>
+        <HomeNavbar />
+        Publication not found
+      </div>
+    );
   }
 
   const publicationAuthors = Array.isArray(publication.authors)
