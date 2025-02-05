@@ -14,6 +14,7 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import ReactMarkdown from "react-markdown";
 
 interface PublicationsPageProps {
   authors: AuthorProfile[];
@@ -52,7 +53,12 @@ export default function PublicationsPage({
     }
     return pub.title === decodedSlug;
   });
-  console.log(publication);
+  // console.log(publication);
+  if (publication)
+    console.log(
+      publication.publication_types === "paper-conference",
+      publication.publication_types
+    );
   if (!publication) {
     return (
       <div>
@@ -277,17 +283,24 @@ export default function PublicationsPage({
               <div className="col-md-1"></div>
               <div className="col-md-10 mx-auto">
                 <div className="row mb-4">
-                  <div className="col-12 col-md-3 font-semibold">Type</div>
+                  <div className="col-12 col-md-3 font-semibold">Type:</div>
                   <div className="col-12 col-md-9">
-                    <p>{publication.publication_types}</p>
+                    <p>
+                      {publication.publication_types[0] === "paper-conference"
+                        ? "Paper Conference"
+                        : "Journal Article"}
+                    </p>
+                    {/* <p>{publication.publication_types}</p> */}
                   </div>
                 </div>
                 <div className="row mb-4">
                   <div className="col-12 col-md-3 font-semibold">
-                    Publication
+                    Publication:
                   </div>
                   <div className="col-12 col-md-9">
-                    {publication.publication}{" "}
+                    <ReactMarkdown className="dark:text-gray-300 leading-relaxed">
+                      {publication.publication}
+                    </ReactMarkdown>
                   </div>
                 </div>
               </div>

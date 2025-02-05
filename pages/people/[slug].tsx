@@ -74,7 +74,11 @@ export default function PeoplesPage({
       return dateB - dateA;
     });
 
-  const publicationsToShow = filteredPublications.slice(0, 5);
+  // var publicationsToShow = filteredPublications.slice(0, 5);
+
+  const [publicationsToShow, setPublicationsToShow] = useState(
+    filteredPublications.slice(0, 5)
+  );
 
   return (
     <div>
@@ -150,62 +154,49 @@ export default function PeoplesPage({
                 <p>{author.profileBio}</p>
               </div>
               <div className="article-widget content-widget-hr mt-12">
-                <h3 className="text-2xl font-semibold mb-4">
-                  Latest Publications
-                </h3>
-                <ul className="list-disc list-inside text-lg space-y-3">
+                <div className="flex items-center justify-between space-x-4 p-4">
+                  <h3 className="text-2xl font-semibold text-primary">
+                    Latest Publications
+                  </h3>
+                  {filteredPublications.length > 5 ? (
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setExpanded((prev) => !prev);
+                        setIsOpen((prev) => !prev);
+                        if (!expanded) {
+                          setPublicationsToShow(filteredPublications);
+                        } else {
+                          setPublicationsToShow(
+                            filteredPublications.slice(0, 5)
+                          );
+                        }
+                      }}
+                    >
+                      <p>Show More</p>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                      <span className="sr-only">Toggle publications</span>
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <ul className="space-y-2 list-disc pl-5">
                   {publicationsToShow.map((pub) => (
-                    <li key={pub.id}>
+                    <li key={pub.id} className="text-sm">
                       <a
                         href={`/publications/${encodeURIComponent(pub.title)}`}
-                        className="text-blue-600 hover:underline"
+                        className="text-lg text-blue-600 hover:underline hover:text-blue-800 transition-colors"
                       >
                         {pub.title}
                       </a>
                     </li>
                   ))}
                 </ul>
-                {filteredPublications.length > 5 && (
-                  <Collapsible
-                    open={isOpen}
-                    onOpenChange={setIsOpen}
-                    className="w-full space-y-2 mt-8 border rounded-lg shadow-sm"
-                  >
-                    <div className="flex items-center justify-between space-x-4 p-4">
-                      <h3 className="text-2xl font-semibold text-primary">
-                        {expanded ? "Show Less" : "Expand Publications"}
-                      </h3>
-                      <CollapsibleTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-9 h-9 p-0 hover:bg-muted"
-                          onClick={() => setExpanded((prev) => !prev)}
-                        >
-                          <ChevronDown
-                            className={`h-4 w-4 transition-transform duration-200 ${
-                              isOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                          <span className="sr-only">Toggle publications</span>
-                        </Button>
-                      </CollapsibleTrigger>
-                    </div>
-                    <CollapsibleContent className="space-y-2 px-4 pb-4">
-                      <ul className="space-y-2 list-disc pl-5">
-                        {filteredPublications.slice(5).map((pub) => (
-                          <li key={pub.id} className="text-sm">
-                            <a
-                              href={`/publications/${encodeURIComponent(pub.title)}`}
-                              className="text-lg text-blue-600 hover:underline hover:text-blue-800 transition-colors"
-                            >
-                              {pub.title}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </CollapsibleContent>
-                  </Collapsible>
-                )}
               </div>
             </div>
           </div>

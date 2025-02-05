@@ -44,7 +44,7 @@ export default function PublicationCard(pub: publicationType) {
       <Card className="max-w-[750px]">
         <CardBody>
           <p className="text-lg">
-            <i className="far fa-file-alt pub-icon mr-2" aria-hidden="true"></i>
+            {/* <i className="far fa-file-alt pub-icon mr-2" aria-hidden="true"></i> */}
             <span className="article-metadata li-cite-author">
               {Array.isArray(pub.authors) &&
                 pub.authors.map((author, index) => (
