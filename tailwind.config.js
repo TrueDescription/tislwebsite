@@ -1,12 +1,14 @@
+const {heroui} = require('@heroui/theme');
 import {nextui} from '@nextui-org/theme'
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './layouts/**/*.{js,ts,jsx,tsx,mdx}',
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    "./layouts/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@heroui/theme/dist/components/(drawer|popover|modal).js"
   ],
   theme: {
   	extend: {
@@ -71,24 +73,13 @@ module.exports = {
   	}
   },
   darkMode: ["class", 'class'],
-  plugins: [
-    nextui({
+  plugins: [nextui({
       themes: {
         light: {
           colors: {
-            background: "#FFFFFF",
-            foreground: "#11181C",
-            primary: {
-              foreground: "#FFFFFF",
-              DEFAULT: "#25355A",
-            },
-            secondary: {
+            background: "#FFFFFF",foreground: "#11181C",primary: {
+              foreground: "#FFFFFF",DEFAULT: "#25355A",},secondary: {
               DEFAULT: "#007FA3"
             }
-          },
-        },
-      },
-    }),
-      require("tailwindcss-animate")
-],
+          },},},}),require("tailwindcss-animate"),heroui()],
 };

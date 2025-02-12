@@ -28,15 +28,21 @@ import {
 import {
   CalendarIcon,
   FileTextIcon,
-  LogOutIcon,
   UsersIcon,
   PlusIcon,
   TrashIcon,
   ArrowLeftIcon,
-  UploadIcon,
 } from "lucide-react";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+} from "@heroui/drawer";
 import { DatePicker } from "@/components/ui/date-picker";
 import { DynamicList } from "@/components/ui/dynamic-list";
+import { useDisclosure } from "@nextui-org/react";
 
 type Profile = {
   author: string;
@@ -109,6 +115,8 @@ export default function AdminPage() {
   const [newItem, setNewItem] = useState<Partial<Profile | Publication | News>>(
     {}
   );
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const editType = searchParams.get("type");
   const editId = searchParams.get("id");
@@ -378,6 +386,8 @@ export default function AdminPage() {
         // data = {...data, authors : authorsString}
         // console.log(authorsString);
         if (pdfFile) {
+          data.url_pdf =
+            "publication/" + data.title + "/" + data.title + ".pdf";
           const formData = new FormData();
           formData.append("pdf", pdfFile);
           formData.append("title", data.title);
@@ -623,12 +633,13 @@ export default function AdminPage() {
                 ) : key === "class" ? (
                   <div>
                     <Label>
-                      Icon classes can be found here:{" "}
+                      Class names can be found at the following{" "}
                       <Link
                         href="https://fontawesome.com/icons"
                         target="_blank"
+                        className="text-blue-500"
                       >
-                        https://fontawesome.com/icons
+                        Link
                       </Link>
                     </Label>
                     <Input
@@ -704,7 +715,7 @@ export default function AdminPage() {
                     <DialogTitle>Add New Author</DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="author" className="text-right">
                         Author
                       </Label>
@@ -718,7 +729,7 @@ export default function AdminPage() {
                         required
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="role" className="text-right">
                         Role
                       </Label>
@@ -740,7 +751,7 @@ export default function AdminPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="organization_name" className="text-right">
                         Organization
                       </Label>
@@ -756,7 +767,7 @@ export default function AdminPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="organization_url" className="text-right">
                         Organization URL
                       </Label>
@@ -772,7 +783,7 @@ export default function AdminPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="bio" className="text-right">
                         Bio
                       </Label>
@@ -785,7 +796,7 @@ export default function AdminPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="interests" className="text-right">
                         Interests
                       </Label>
@@ -799,7 +810,7 @@ export default function AdminPage() {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="education" className="text-right">
                         Education
                       </Label>
@@ -812,7 +823,7 @@ export default function AdminPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="profile_bio" className="text-right">
                         Profile Bio
                       </Label>
@@ -828,9 +839,17 @@ export default function AdminPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="social_links" className="text-right">
                         Social Links
+                        <Tooltip
+                          content="Please also inlcude
+                        'https://' on all links that are redirects. For email, use the following format 'mailto:email@example.com'"
+                        >
+                          <Button className="bg-transparent border-2 border-gray-400 text-gray-600 rounded-full w-5 h-5 p-0 min-w-0 ml-3">
+                            i
+                          </Button>
+                        </Tooltip>
                       </Label>
                       <div className="col-span-3">
                         <DynamicList
@@ -842,9 +861,18 @@ export default function AdminPage() {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="personal_website" className="text-right">
-                        Personal Website
+                        Personal Website:
+                        <Tooltip
+                          content="Please include if you want name links
+                        to redirect to a personal website. Please also inlcude
+                        'https://'. Leave blank otherwise."
+                        >
+                          <Button className="bg-transparent border-2 border-gray-400 text-gray-600 rounded-full w-5 h-5 p-0 min-w-0 ml-3">
+                            i
+                          </Button>
+                        </Tooltip>
                       </Label>
                       <Input
                         id="personal_website"
@@ -858,7 +886,7 @@ export default function AdminPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="profilePic" className="text-right">
                         Profile Picture
                       </Label>
@@ -941,12 +969,46 @@ export default function AdminPage() {
                       Add Publication
                     </Button>
                   </DialogTrigger>
+
                   <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                       <DialogTitle className="text-xl sm:text-2xl font-bold">
                         Add New Publication
                       </DialogTitle>
+                      {/* <Button onClick={onOpen} className={"display: none"}>
+                        Open Info Tab
+                      </Button>
+                      <Drawer
+                        isOpen={isAddDialogOpen}
+                        onOpenChange={setIsAddDialogOpen}
+                        isDismissable={false}
+                        backdrop="transparent"
+                        hideCloseButton={true}
+                      >
+                        <DrawerContent>
+                          {(onClose) => (
+                            <>
+                              <DrawerHeader className="flex flex-col gap-1">
+                                Important Info
+                              </DrawerHeader>
+                              <DrawerBody>
+                                <h2>Citation</h2>
+                                <p>
+                                  Please follow the following format for the
+                                  citation section at the following{" "}
+                                  <Link href="https://www.bibtex.com/g/bibtex-format/">
+                                    link
+                                  </Link>
+                                </p>
+                                <p></p>
+                                <p></p>
+                              </DrawerBody>
+                            </>
+                          )}
+                        </DrawerContent>
+                      </Drawer> */}
                     </DialogHeader>
+
                     <div className="grid gap-4 py-4">
                       <div className="grid gap-2">
                         <Label htmlFor="title">Title</Label>
@@ -1056,7 +1118,18 @@ export default function AdminPage() {
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor="abstract">Citation</Label>
+                        <Label htmlFor="abstract">
+                          Citation: Please follow the format found at the
+                          following{" "}
+                          <Link
+                            className="text-blue-500 hover:text-blue-700 underline"
+                            href="https://www.bibtex.com/g/bibtex-format/"
+                            rel="noopener noreferrer"
+                          >
+                            link
+                          </Link>
+                        </Label>
+
                         <Textarea
                           id="Citation"
                           value={(newItem as any).cite || ""}
@@ -1079,29 +1152,67 @@ export default function AdminPage() {
                           required
                         />
                       </div>
-                      <div className="grid gap-4 sm:grid-cols-2">
+                      <h1></h1>
+                      <Label>
+                        Please include 'https://' in all following links if it
+                        is meant to be directed off site.
+                      </Label>
+                      <Label>The following fields are all optional.</Label>
+                      <div className="flex-col">
                         {[
-                          { id: "url_pdf", label: "PDF URL" },
+                          {
+                            id: "url_pdf",
+                            label: "PDF URL:",
+                          },
                           { id: "url_preprint", label: "Preprint URL" },
-                          { id: "url_code", label: "Code URL" },
+                          { id: "url_code", label: "GitHub URL" },
                           { id: "url_dataset", label: "Dataset URL" },
                           { id: "url_poster", label: "Poster URL" },
                           { id: "url_project", label: "Project URL" },
                           { id: "url_slides", label: "Slides URL" },
                           { id: "url_source", label: "Source URL" },
                           { id: "url_video", label: "Video URL" },
-                        ].map(({ id, label }) => (
-                          <div key={id} className="grid gap-2">
-                            <Label htmlFor={id}>{label}</Label>
-                            <Input
-                              id={id}
-                              value={(newItem as any)[id] || ""}
-                              onChange={(e) =>
-                                setNewItem({ ...newItem, [id]: e.target.value })
-                              }
-                            />
-                          </div>
-                        ))}
+                        ].map(({ id, label }) => {
+                          if (id === "url_pdf") {
+                            return (
+                              <div key={id} className="mt-3">
+                                <Label htmlFor={id}>
+                                  {label}
+                                  <Tooltip content="This will be filled in automatically with an upload">
+                                    <Button className="bg-transparent border-2 border-gray-400 text-gray-600 rounded-full w-5 h-5 p-0 min-w-0 ml-3">
+                                      i
+                                    </Button>
+                                  </Tooltip>
+                                </Label>
+                                <Input
+                                  id={id}
+                                  value={(newItem as any)[id] || ""}
+                                  onChange={(e) =>
+                                    setNewItem({
+                                      ...newItem,
+                                      [id]: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                            );
+                          }
+                          return (
+                            <div key={id} className="mt-3">
+                              <Label htmlFor={id}>{label}</Label>
+                              <Input
+                                id={id}
+                                value={(newItem as any)[id] || ""}
+                                onChange={(e) =>
+                                  setNewItem({
+                                    ...newItem,
+                                    [id]: e.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                     <Button onClick={handleAdd} className="w-full">
@@ -1163,7 +1274,7 @@ export default function AdminPage() {
                     <DialogTitle>Add New News</DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="content" className="text-right">
                         Content
                       </Label>
@@ -1177,9 +1288,16 @@ export default function AdminPage() {
                         required
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
                       <Label htmlFor="Icon" className="text-right">
-                        Icon
+                        Icon: Class names can be found at the following{" "}
+                        <Link
+                          href="https://fontawesome.com/icons"
+                          target="_blank"
+                          className="text-blue-500"
+                        >
+                          link
+                        </Link>
                       </Label>
                       <Input
                         id="Icon"
@@ -1193,11 +1311,12 @@ export default function AdminPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="organization_name" className="text-right">
+                    <div className="flex-col grid-cols-4 items-center gap-4">
+                      <Label htmlFor="date" className="text-right mr-3">
                         Date
                       </Label>
                       <DatePicker
+                        className="fill"
                         id="date"
                         selected={
                           (newItem as any).date

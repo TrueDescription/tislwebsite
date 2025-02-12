@@ -10,6 +10,10 @@
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^6.6.0",
+		"@heroui/drawer": "^2.2.8",
+		"@heroui/system": "^2.4.7",
+		"@heroui/theme": "^2.4.6",
+		"@heroui/tooltip": "^2.2.8",
 		"@nextui-org/button": "2.0.38",
 		"@nextui-org/card": "^2.2.1",
 		"@nextui-org/chip": "^2.2.1",
