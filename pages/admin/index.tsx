@@ -296,6 +296,8 @@ export default function AdminPage() {
         }
       } else {
         dataToSend = { ...editItem };
+        dataToSend.url_pdf =
+          "publication/" + dataToSend.title + "/" + dataToSend.title + ".pdf";
         if (pdfFile) {
           const formData = new FormData();
           formData.append("pdf", pdfFile);
