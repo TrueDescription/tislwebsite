@@ -12,6 +12,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
+import { Image } from "@nextui-org/image";
 
 export default function HomeNavbar() {
   const router = useRouter();
@@ -27,13 +28,16 @@ export default function HomeNavbar() {
 
   return (
     <div className="w-full">
-      <Navbar className="max-w-full p-0 mt-0" position="static">
+      <Navbar
+        className="max-w-full p-0 mt-0"
+        position="sticky"
+        maxWidth="2xl"
+        isBlurred={true}
+      >
         <NavbarContent className="flex items-center w-full">
           <NavbarBrand className="mr-6">
             <Link color="foreground" href="/">
-              <p className="font-bold text-xl lg:text-xl transition-all duration-300">
-                Toronto Intelligent Systems Lab
-              </p>
+              <Image src="/icons/SiteLogo.svg" width={370} height={100} />
             </Link>
           </NavbarBrand>
 
