@@ -400,7 +400,7 @@ export default function AdminPage() {
   }
 
   // ========== ADD: Create New Item ==========
-  async function handleAdd() {
+  async function handleAdd(data: Partial<Profile | Publication | News>) {
     try {
       let type: "profiles" | "publications" | "news" | "" = "";
       if (activeSection === "news") {
@@ -411,7 +411,7 @@ export default function AdminPage() {
         type = "publications";
       }
 
-      let data: any = { ...newItem };
+      // let data: any = { ...newItem };
 
       // PROFILES
       if (type === "profiles") {
@@ -452,6 +452,12 @@ export default function AdminPage() {
           if (!pdfRes.ok) throw new Error("PDF update failed.");
           setPdfFile(null);
         }
+      }
+
+      if (type === "news") {
+        // const formData = new FormData();
+        console.log(data);
+        // return;
       }
 
       // POST to server
@@ -642,8 +648,8 @@ export default function AdminPage() {
                       <AddProfileForm
                         onSubmit={(data) => {
                           // Capture final fields and call handleAdd
-                          setNewItem(data);
-                          handleAdd();
+                          // setNewItem(data);
+                          handleAdd(data);
                         }}
                         onAvatarFileChange={(file) => setAvatarFile(file)}
                       />
@@ -686,8 +692,8 @@ export default function AdminPage() {
                         {/* ---------- Modular Add Publication Form ---------- */}
                         <AddPublicationForm
                           onSubmit={(data) => {
-                            setNewItem(data);
-                            handleAdd();
+                            // setNewItem(data);
+                            handleAdd(data);
                           }}
                           onPdfFileChange={(file) => setPdfFile(file)}
                         />
@@ -727,8 +733,11 @@ export default function AdminPage() {
                       {/* ---------- Modular Add News Form ---------- */}
                       <AddNewsForm
                         onSubmit={(data) => {
-                          setNewItem(data);
-                          handleAdd();
+                          // setNewItem(data);
+                          // console.log("newItem! ");
+                          // // console.log(data);
+                          // console.log("newItem! ");
+                          handleAdd(data);
                         }}
                       />
                     </DialogContent>

@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDB } from './db';
 
+// THis is api for updating/saving only, move all other Add/Remove apis here and rename files to typeSave
+
 async function handleGetAll(res: NextApiResponse) {
   const db = await getDB();
   const profiles = await db.all('SELECT * FROM profiles');
