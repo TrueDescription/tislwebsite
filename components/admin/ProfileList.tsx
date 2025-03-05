@@ -1,5 +1,4 @@
 import React from "react";
-import { Profile } from "@"; // Assuming you'll create a types file for your shared types
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
