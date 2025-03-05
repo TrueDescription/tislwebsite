@@ -1,8 +1,12 @@
+// @/components/admin/PublicationsList.tsx
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, TrashIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+// import { Publication } from "@/types/allTypes"; // Adjust path if needed
 
 type Publication = {
   id: number;
@@ -31,16 +35,18 @@ type PublicationsListProps = {
   onRemove: (id: number) => void;
 };
 
-const PublicationsList: React.FC<PublicationsListProps> = ({
+export default function PublicationsList({
   publications,
   onEdit,
   onRemove,
-}) => {
+}: PublicationsListProps) {
   const router = useRouter();
+
   return (
     <section>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Publications</h2>
+      <div className="flex justify-between mb-4 ">
+        {/* <h2 className="text-2xl font-semibold">Publications</h2> */}
+        {/* The "Add Publication" button + Dialog remain in index.tsx */}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {publications.map((pub) => (
@@ -79,6 +85,4 @@ const PublicationsList: React.FC<PublicationsListProps> = ({
       </div>
     </section>
   );
-};
-
-export default PublicationsList;
+}

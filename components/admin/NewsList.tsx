@@ -1,8 +1,12 @@
+// @/components/admin/NewsList.tsx
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, TrashIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+// import { News } from "@/types/allTypes"; // Adjust if needed
 
 type News = {
   id: number;
@@ -13,16 +17,18 @@ type News = {
 
 type NewsListProps = {
   news: News[];
-  onEdit: (news: News) => void;
+  onEdit: (newsItem: News) => void;
   onRemove: (id: number) => void;
 };
 
-const NewsList: React.FC<NewsListProps> = ({ news, onEdit, onRemove }) => {
+export default function NewsList({ news, onEdit, onRemove }: NewsListProps) {
   const router = useRouter();
+
   return (
     <section>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">News</h2>
+      <div className="flex justify-between mb-4">
+        {/* <h2 className="text-2xl font-semibold">News</h2> */}
+        {/* The "Add News" dialog remains in index.tsx */}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {news.map((newsi) => (
@@ -65,6 +71,4 @@ const NewsList: React.FC<NewsListProps> = ({ news, onEdit, onRemove }) => {
       </div>
     </section>
   );
-};
-
-export default NewsList;
+}
