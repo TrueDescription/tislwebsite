@@ -369,7 +369,11 @@ export default function AdminPage() {
 
         // If user selected a new PDF
         if (pdfFile && dataToSend.title) {
-          dataToSend.url_pdf = `publication/${dataToSend.title}/${dataToSend.title}.pdf`;
+          dataToSend.url_pdf =
+            `publication/${dataToSend.title}/${dataToSend.title}.pdf`.replace(
+              / /g,
+              "-"
+            );
           const formData = new FormData();
           formData.append("pdf", pdfFile);
           formData.append("title", dataToSend.title);
@@ -415,11 +419,6 @@ export default function AdminPage() {
 
       // PROFILES
       if (type === "profiles") {
-        // If user typed an array for interests, etc.
-        // We'll store them as arrays or comma-strings as your server expects
-        // If your server expects CSV, you could do:
-        // data.interests = (data.interests ?? []).join(", ");
-        // data.social_links = (data.social_links ?? []).join(", ");
         if (avatarFile && data.author) {
           const formData = new FormData();
           formData.append("avatar", avatarFile);
@@ -441,7 +440,11 @@ export default function AdminPage() {
           data.authors = data.authors.join(", ");
         }
         if (pdfFile && data.title) {
-          data.url_pdf = `publication/${data.title}/${data.title}.pdf`;
+          // data.url_pdf = `publication/${data.title}/${data.title}.pdf`;
+          data.url_pdf = `publication/${data.title}/${data.title}.pdf`.replace(
+            / /g,
+            "-"
+          );
           const formData = new FormData();
           formData.append("pdf", pdfFile);
           formData.append("title", String(data.title));
