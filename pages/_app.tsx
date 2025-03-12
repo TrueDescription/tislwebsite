@@ -16,12 +16,18 @@ export default function App({ Component, pageProps }: AppProps) {
   const [authors, setAuthors] = useState(null);
   const [publications, setPublications] = useState(null);
   const [news, setNews] = useState(null);
+  const [teachingContentData, setTeachingContent] = useState("");
+  const [joinUsContentData, setJoinUsContent] = useState("");
+  const [contactContentData, setContactContent] = useState("");
 
   useEffect(() => {
     async function fetchData() {
       const authors = await fetch("/api/authors");
       const publications = await fetch("/api/publications");
       const news = await fetch("/api/news");
+      const teachingContent = await fetch("/api/admin/teaching");
+      const joinUsContent = await fetch("/api/admin/joinus");
+      const contactContent = await fetch("/api/admin/contact");
 
       const authorsData = await authors.json();
       setAuthors(authorsData);
@@ -29,7 +35,14 @@ export default function App({ Component, pageProps }: AppProps) {
       setPublications(pubData);
       const newsData = await news.json();
       setNews(newsData);
-      // console.log(newsData);
+
+      const teachingData = await teachingContent.json();
+      setTeachingContent(teachingData.content);
+      console.log(teachingData.content);
+      const joinUsData = await joinUsContent.json();
+      setJoinUsContent(joinUsData.content);
+      const contactData = await contactContent.json();
+      setContactContent(contactData.content);
     }
     fetchData();
   }, []);
@@ -41,6 +54,9 @@ export default function App({ Component, pageProps }: AppProps) {
           authors={authors}
           publications={publications}
           news={news}
+          teachingContentData={teachingContentData}
+          joinUsContentData={joinUsContentData}
+          contactContentData={contactContentData}
         />
       </NextThemesProvider>
     </NextUIProvider>
