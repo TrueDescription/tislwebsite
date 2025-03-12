@@ -6,13 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
 import { ArrowLeftIcon } from "lucide-react";
-
-type News = {
-  id: number;
-  class: string;
-  date: string;
-  content: string;
-};
+import { News } from "@/types/allTypes";
 
 type NewsEditFormProps = {
   news: News;

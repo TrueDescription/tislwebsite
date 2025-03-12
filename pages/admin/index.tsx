@@ -39,58 +39,7 @@ import NewsEditForm from "@/components/admin/NewsEditForm";
 import AddProfileForm from "@/components/admin/AddProfileForm";
 import AddPublicationForm from "@/components/admin/AddPublicationForm";
 import AddNewsForm from "@/components/admin/AddNewsForm";
-
-// ---------- Types (Adjust if you have a separate @/types file) ----------
-type Profile = {
-  author: string;
-  superuser: number;
-  role: string;
-  organization_name: string;
-  organization_url: string;
-  bio: string;
-  interests: string[];
-  education: string;
-  profile_bio: string;
-  social_links: string[];
-  personal_website: string;
-};
-
-type Publication = {
-  id: number;
-  authors: string; // comma-separated
-  date: string;
-  publication_types: string;
-  publication: string;
-  publication_short: string;
-  title: string;
-  url_pdf: string;
-  abstract: string;
-  url_preprint: string;
-  url_code: string;
-  url_dataset: string;
-  url_poster: string;
-  url_project: string;
-  url_slides: string;
-  url_source: string;
-  url_video: string;
-  cite: string;
-};
-
-type News = {
-  id: number;
-  class: string;
-  date: string;
-  content: string;
-};
-
-// ---------- Constants (Roles, etc.) ----------
-const PROFILE_ROLES = [
-  "Alumni",
-  "PhD Student",
-  "Assistant Professor",
-  "MSc Student",
-];
-const PUBLICATION_TYPES = ["paper-conference", "article-journal"];
+import { Profile, Publication, News } from "@/types/allTypes";
 
 type AdminListProps = {
   teachingContentData: string;

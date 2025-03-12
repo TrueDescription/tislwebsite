@@ -1,4 +1,13 @@
-type Profile = {
+export const PROFILE_ROLES = [
+  "Alumni",
+  "PhD Student",
+  "Assistant Professor",
+  "MSc Student",
+];
+
+export const PUBLICATION_TYPES = ["paper-conference", "article-journal"];
+
+export type Profile = {
   author: string;
   superuser: number;
   role: string;
@@ -12,7 +21,7 @@ type Profile = {
   personal_website: string;
 };
 
-type Publication = {
+export type Publication = {
   id: number;
   authors: string;
   date: string;
@@ -33,7 +42,7 @@ type Publication = {
   cite: string;
 };
 
-type News = {
+export type News = {
   id: number;
   class: string;
   date: string;

@@ -15,31 +15,7 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Tooltip } from "@nextui-org/tooltip";
-// import { Publication } from "@/types/allTypes"; // adjust if needed
-
-type Publication = {
-  id: number;
-  authors: string[];
-  date: string;
-  publication_types: string;
-  publication: string;
-  publication_short: string;
-  title: string;
-  url_pdf: string;
-  abstract: string;
-  url_preprint: string;
-  url_code: string;
-  url_dataset: string;
-  url_poster: string;
-  url_project: string;
-  url_slides: string;
-  url_source: string;
-  url_video: string;
-  cite: string;
-};
-
-// If you store your publication types in a separate file:
-const PUBLICATION_TYPES = ["paper-conference", "article-journal"];
+import { PUBLICATION_TYPES, Publication } from "@/types/allTypes";
 
 // Fields requiring "https://..."
 const extraLinkFields = [
@@ -65,14 +41,13 @@ export default function AddPublicationForm({
 }: AddPublicationFormProps) {
   const [localItem, setLocalItem] = useState<Partial<Publication>>({
     title: "",
-    authors: [],
+    authors: "",
     date: "",
     publication_types: "",
     publication: "",
     publication_short: "",
     abstract: "",
     cite: "",
-    // plus all your link fields:
     url_pdf: "",
     url_preprint: "",
     url_code: "",

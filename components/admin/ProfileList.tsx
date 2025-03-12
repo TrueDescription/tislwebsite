@@ -7,21 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
-// import { Profile } from "@/types/allTypes"; // <-- adjust path to your actual types location
-
-type Profile = {
-  author: string;
-  superuser: number;
-  role: string;
-  organization_name: string;
-  organization_url: string;
-  bio: string;
-  interests: string[];
-  education: string;
-  profile_bio: string;
-  social_links: string[];
-  personal_website: string;
-};
+import { Profile } from "@/types/allTypes";
 
 type ProfileListProps = {
   profiles: Profile[];

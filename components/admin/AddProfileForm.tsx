@@ -14,30 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DynamicList } from "@/components/ui/dynamic-list";
-import { DatePicker } from "@/components/ui/date-picker"; // only if needed
-// import { Profile } from "@/types/allTypes"; // adjust path if needed
-
-type Profile = {
-  author: string;
-  superuser: number;
-  role: string;
-  organization_name: string;
-  organization_url: string;
-  bio: string;
-  interests: string[];
-  education: string;
-  profile_bio: string;
-  social_links: string[];
-  personal_website: string;
-};
-
-// For roles, if you store them in a separate file:
-const PROFILE_ROLES = [
-  "Alumni",
-  "PhD Student",
-  "Assistant Professor",
-  "MSc Student",
-];
+import { PROFILE_ROLES, Profile } from "@/types/allTypes";
 
 type AddProfileFormProps = {
   onSubmit: (newProfile: Partial<Profile>) => void;

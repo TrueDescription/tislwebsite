@@ -6,28 +6,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, TrashIcon } from "lucide-react";
-// import { Publication } from "@/types/allTypes"; // Adjust path if needed
-
-type Publication = {
-  id: number;
-  authors: string;
-  date: string;
-  publication_types: string;
-  publication: string;
-  publication_short: string;
-  title: string;
-  url_pdf: string;
-  abstract: string;
-  url_preprint: string;
-  url_code: string;
-  url_dataset: string;
-  url_poster: string;
-  url_project: string;
-  url_slides: string;
-  url_source: string;
-  url_video: string;
-  cite: string;
-};
+import { Publication } from "@/types/allTypes";
 
 type PublicationsListProps = {
   publications: Publication[];

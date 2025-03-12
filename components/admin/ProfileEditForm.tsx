@@ -11,34 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePicker } from "@/components/ui/date-picker";
 import { DynamicList } from "@/components/ui/dynamic-list";
-// import { Profile } from "@/types/allTypes"; // adjust path if necessary
-import { Link } from "@nextui-org/link";
 import { Button } from "@/components/ui/button";
-import { Tooltip } from "@nextui-org/tooltip";
 import { ArrowLeftIcon } from "lucide-react";
-
-type Profile = {
-  author: string;
-  superuser: number;
-  role: string;
-  organization_name: string;
-  organization_url: string;
-  bio: string;
-  interests: string[];
-  education: string;
-  profile_bio: string;
-  social_links: string[];
-  personal_website: string;
-};
-
-const PROFILE_ROLES = [
-  "Alumni",
-  "PhD Student",
-  "Assistant Professor",
-  "MSc Student",
-];
+import { PROFILE_ROLES, Profile } from "@/types/allTypes";
 
 type ProfileEditFormProps = {
   profile: Profile;

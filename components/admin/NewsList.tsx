@@ -6,14 +6,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, TrashIcon } from "lucide-react";
-// import { News } from "@/types/allTypes"; // Adjust if needed
-
-type News = {
-  id: number;
-  class: string;
-  date: string;
-  content: string;
-};
+import { News } from "@/types/allTypes";
 
 type NewsListProps = {
   news: News[];

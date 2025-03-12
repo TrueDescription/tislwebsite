@@ -15,30 +15,8 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { ArrowLeftIcon } from "lucide-react";
-// import { Publication } from "@/types/allTypes"; // adjust path if needed
+import { Publication, PUBLICATION_TYPES } from "@/types/allTypes";
 
-type Publication = {
-  id: number;
-  authors: string;
-  date: string;
-  publication_types: string;
-  publication: string;
-  publication_short: string;
-  title: string;
-  url_pdf: string;
-  abstract: string;
-  url_preprint: string;
-  url_code: string;
-  url_dataset: string;
-  url_poster: string;
-  url_project: string;
-  url_slides: string;
-  url_source: string;
-  url_video: string;
-  cite: string;
-};
-
-const PUBLICATION_TYPES = ["paper-conference", "article-journal"];
 type PublicationEditFormProps = {
   publication: Publication;
   onChange: (

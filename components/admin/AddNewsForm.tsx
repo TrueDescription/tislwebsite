@@ -6,14 +6,7 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Button } from "@/components/ui/button";
 import { Link } from "@nextui-org/link";
-// import { News } from "@/types/allTypes";
-
-type News = {
-  id: number;
-  class: string;
-  date: string;
-  content: string;
-};
+import { News } from "@/types/allTypes";
 
 type AddNewsFormProps = {
   onSubmit: (newNews: Partial<News>) => void;
